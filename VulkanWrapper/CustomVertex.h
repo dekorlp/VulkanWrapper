@@ -10,7 +10,13 @@ class CCustomVertex : public CVulkanVertex
 
 		CCustomVertex()
 		{
-			VkVertexInputBindingDescription bindingDescription = {};
+			// Variant 1
+			AddVertexInputBindingDescription(sizeof(CCustomVertex), 0);
+			AddVertexInputAttributeDescription(offsetof(CCustomVertex, pos), 0, 0, VK_FORMAT_R32G32_SFLOAT);
+			AddVertexInputAttributeDescription(offsetof(CCustomVertex, color), 0, 1, VK_FORMAT_R32G32B32_SFLOAT);
+
+			// variant 2
+			/*VkVertexInputBindingDescription bindingDescription = {};
 			bindingDescription.binding = 0;
 			bindingDescription.stride = sizeof(CCustomVertex);
 			bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
@@ -28,8 +34,9 @@ class CCustomVertex : public CVulkanVertex
 			colorAttributeDescription.location = 1;
 			colorAttributeDescription.format = VK_FORMAT_R32G32B32_SFLOAT;
 			colorAttributeDescription.offset = offsetof(CCustomVertex, color);
-			m_VertexInputAttributeDescription.push_back(colorAttributeDescription);
+			m_VertexInputAttributeDescription.push_back(colorAttributeDescription);*/
 		}
+
 
 		CCustomVertex(glm::vec2 pos, glm::vec3 color)
 		{
