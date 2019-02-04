@@ -32,7 +32,6 @@ public:
 	void DestroyDescriptorPool();
 	std::vector<VkDeviceMemory> GetUniformBuffersMemory();
 	void UpdateUniformBuffers(uint32_t currentImage);
-	void UpdateUniformBuffers();
 
 	bool operator==(const CVulkanMesh& rhs) const;
 

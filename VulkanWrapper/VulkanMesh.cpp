@@ -229,6 +229,7 @@ std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()
 	return uniformBuffersMemory;
 }
 
+
 void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();

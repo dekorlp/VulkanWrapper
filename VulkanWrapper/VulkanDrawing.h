@@ -48,6 +48,5 @@ private:
 
 	std::vector<VkFence> inFlightFences;
 
-	//std::vector<VkCommandBuffer> m_SecondaryCommandBuffer;
 	std::vector<CVulkanMesh> m_VulkanMesh;
 };

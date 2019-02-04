@@ -144,7 +144,6 @@ void CVulkanDrawing::DestroySemaphores()
 void CVulkanDrawing::RegisterMesh(CVulkanMesh mesh)
 {
 	m_VulkanMesh.push_back(mesh);
-	//m_SecondaryCommandBuffer.push_back(commandBuffer);
 }
 
 void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
@@ -152,11 +151,6 @@ void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
 	m_VulkanMesh.erase(std::find(m_VulkanMesh.begin(), m_VulkanMesh.end(), mesh));
 	DestroyCommandBuffers();
 	CreateCommandBuffers();
-
-	//TODO untested
-	//m_SecondaryCommandBuffer.erase(std::find(m_SecondaryCommandBuffer.begin(), m_SecondaryCommandBuffer.end(), commandBuffer));
-	//DestroyCommandBuffers();
-	//CreateCommandBuffers();
 }
 
 void CVulkanDrawing::Draw()
