@@ -1,12 +1,11 @@
 #include "VulkanDrawing.h"
 
-void CVulkanDrawing::Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPipeline pipeline, CVulkanPresentation presentation)
+void CVulkanDrawing::Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPresentation presentation)
 {
 	m_LogicalDevice = logicalDevice;
-	m_Pipeline = pipeline;
 	m_Presentation = presentation;
 	m_PhysicalDevice = physicalDevice;
-	m_SecondaryCommandBuffer.clear();
+	m_VulkanMesh.clear();
 }
 
 void CVulkanDrawing::CreateFrameBuffers()
@@ -96,19 +95,12 @@ void CVulkanDrawing::CreateCommandBuffers()
 		renderPassInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
-			/*vkCmdBindPipeline(commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline.GetGraphicsPipeline());
-
-			VkBuffer vertexBuffers[] = { vertexBuffer };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(commandBuffers[i], 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT16);
-
-			//vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(vertices.size()), 1, 0, 0);
-			vkCmdDrawIndexed(commandBuffers[i], static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);*/
-		if (m_SecondaryCommandBuffer.size() > 0)
+		
+		for (unsigned int j = 0; j < m_VulkanMesh.size(); j++)
 		{
-			vkCmdExecuteCommands(commandBuffers[i], m_SecondaryCommandBuffer.size(), m_SecondaryCommandBuffer.data());
+			vkCmdExecuteCommands(commandBuffers[i], 1, m_VulkanMesh.at(j).GetCommandBuffer());
 		}
+			
 		vkCmdEndRenderPass(commandBuffers[i]);
 
 		if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
@@ -149,17 +141,22 @@ void CVulkanDrawing::DestroySemaphores()
 	}
 }
 
-void CVulkanDrawing::RegisterMesh(VkCommandBuffer commandBuffer)
+void CVulkanDrawing::RegisterMesh(CVulkanMesh mesh)
 {
-	m_SecondaryCommandBuffer.push_back(commandBuffer);
+	m_VulkanMesh.push_back(mesh);
+	//m_SecondaryCommandBuffer.push_back(commandBuffer);
 }
 
-void CVulkanDrawing::UnregisterMesh(VkCommandBuffer commandBuffer)
+void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
 {
-	//TODO untested
-	m_SecondaryCommandBuffer.erase(std::find(m_SecondaryCommandBuffer.begin(), m_SecondaryCommandBuffer.end(), commandBuffer));
+	m_VulkanMesh.erase(std::find(m_VulkanMesh.begin(), m_VulkanMesh.end(), mesh));
 	DestroyCommandBuffers();
 	CreateCommandBuffers();
+
+	//TODO untested
+	//m_SecondaryCommandBuffer.erase(std::find(m_SecondaryCommandBuffer.begin(), m_SecondaryCommandBuffer.end(), commandBuffer));
+	//DestroyCommandBuffers();
+	//CreateCommandBuffers();
 }
 
 void CVulkanDrawing::Draw()

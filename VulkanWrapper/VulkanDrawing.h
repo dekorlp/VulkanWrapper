@@ -8,11 +8,12 @@
 #include "VulkanPipeline.h"
 #include "vulkanpresentation.h"
 #include "vulkanqueuefamilie.h"
+#include "VulkanMesh.h"
 
 class CVulkanDrawing
 {
 public:
-	void Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPipeline pipeline, CVulkanPresentation presentation);
+	void Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPresentation presentation);
 	void CreateFrameBuffers();
 	void DestroyFrameBuffers();
 	void CreateCommandPool();
@@ -21,8 +22,8 @@ public:
 	void DestroyCommandBuffers();
 	void CreateSemaphores();
 	void DestroySemaphores();
-	void RegisterMesh(VkCommandBuffer commandBuffer);
-	void UnregisterMesh(VkCommandBuffer commandBuffer);
+	void RegisterMesh(CVulkanMesh commandBuffer);
+	void UnregisterMesh(CVulkanMesh commandBuffer);
 	void Draw();
 	void CreateSyncObjects();
 	std::vector<VkFramebuffer> getFramebuffers();
@@ -33,7 +34,7 @@ public:
 private:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	CVulkanLogicalDevice m_LogicalDevice;
-	CVulkanPipeline m_Pipeline;
+	//CVulkanPipeline m_Pipeline;
 	CVulkanPresentation m_Presentation;
 	CVulkanPhysicalDevice m_PhysicalDevice;
 	VkCommandPool commandPool;
@@ -48,6 +49,6 @@ private:
 
 	std::vector<VkFence> inFlightFences;
 
-	std::vector<VkCommandBuffer> m_SecondaryCommandBuffer;
-
+	//std::vector<VkCommandBuffer> m_SecondaryCommandBuffer;
+	std::vector<CVulkanMesh> m_VulkanMesh;
 };

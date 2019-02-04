@@ -16,6 +16,9 @@
     <Filter Include="shader">
       <UniqueIdentifier>{57190efb-8d27-469f-ba52-6d76659b85a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader\Descriptor">
+      <UniqueIdentifier>{4dcbc86d-2326-4344-a47d-0eb17f6e6252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,6 +102,12 @@
     </None>
     <None Include="Shader\vert.spv">
       <Filter>shader</Filter>
+    </None>
+    <None Include="Shader\Descriptor\frag.spv">
+      <Filter>shader\Descriptor</Filter>
+    </None>
+    <None Include="Shader\Descriptor\vert.spv">
+      <Filter>shader\Descriptor</Filter>
     </None>
   </ItemGroup>
 </Project>

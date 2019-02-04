@@ -15,8 +15,10 @@ public:
 	void createIndexBuffer(const std::vector<uint16_t> indices);
 	void DestroyIndexBuffer();
 	void CreateSecondaryCommandBuffers(CVulkanPresentation presentation, CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer);
-	VkCommandBuffer GetCommandBuffer();
+	VkCommandBuffer* const GetCommandBuffer();
 	void DestroySecondaryCommandBuffer();
+
+	bool operator==(const CVulkanMesh& rhs) const;
 
 private:
 	CVulkanPresentation m_Presentation;

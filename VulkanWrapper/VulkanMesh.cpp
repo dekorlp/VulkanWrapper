@@ -132,12 +132,25 @@ void CVulkanMesh::DestroyIndexBuffer()
 	vkFreeMemory(m_LogicalDevice.getDevice(), indexBufferMemory, nullptr);
 }
 
-VkCommandBuffer CVulkanMesh::GetCommandBuffer()
+VkCommandBuffer* const CVulkanMesh::GetCommandBuffer()
 {
-	return m_SecondaryCommandBuffer;
+	return &m_SecondaryCommandBuffer;
 }
 
 void CVulkanMesh::DestroySecondaryCommandBuffer()
 {
 	vkFreeCommandBuffers(m_LogicalDevice.getDevice(), m_CommandPool, static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
+}
+
+bool CVulkanMesh::operator==(const CVulkanMesh& rhs) const
+{
+	const CVulkanMesh* ptr = dynamic_cast<const CVulkanMesh*>(&rhs);
+	if (this != ptr)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

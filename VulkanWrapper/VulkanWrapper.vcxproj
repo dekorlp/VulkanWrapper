@@ -172,6 +172,8 @@
     <ClInclude Include="VulkanVertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shader\Descriptor\frag.spv" />
+    <None Include="Shader\Descriptor\vert.spv" />
     <None Include="Shader\frag.spv" />
     <None Include="Shader\test_frag.spv" />
     <None Include="Shader\test_vert.spv" />

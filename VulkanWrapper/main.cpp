@@ -101,7 +101,7 @@ private:
 		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/vert.spv"), readFile("shader/frag.spv"));
 
-		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPipeline, vulkanPresentation);
+		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 		vulkanDrawing.CreateCommandPool();
 
@@ -120,7 +120,7 @@ private:
 			0, 1, 2, 2, 3, 0,
 		});
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());
-		vulkanDrawing.RegisterMesh(plane.GetCommandBuffer());
+		vulkanDrawing.RegisterMesh(plane);
 
 		vulkanDrawing.CreateCommandBuffers();
 		vulkanDrawing.CreateSyncObjects();	
@@ -150,11 +150,11 @@ private:
 
 		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/vert.spv"), readFile("shader/frag.spv"));
-		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPipeline, vulkanPresentation);
+		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());
-		vulkanDrawing.RegisterMesh(plane.GetCommandBuffer());
+		vulkanDrawing.RegisterMesh(plane);
 		vulkanDrawing.CreateCommandBuffers();
 		
 	
