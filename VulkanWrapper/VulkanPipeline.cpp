@@ -6,7 +6,7 @@ void CVulkanPipeline::InitVulkanPipeline(CVulkanLogicalDevice device, CVulkanPre
 	m_Presentation = presentation;
 }
 
-void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader)
+void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex)
 {
 	auto vertShaderCode = vertexShader;
 	auto fragShaderCode = fragmentShader;
@@ -28,13 +28,13 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
-	auto bindingDesription = SVulkanVertex::getBindingDescription();
-	auto attributeDescription = SVulkanVertex::getAttributeDescriptions();
+	auto bindingDesription = vertex.getBindingDescription();
+	auto attributeDescription = vertex.getAttributeDescription();
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDesription; // Optional
+	vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDesription.size());
+	vertexInputInfo.pVertexBindingDescriptions = bindingDesription.data(); // Optional
 	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescription.size());
 	vertexInputInfo.pVertexAttributeDescriptions = attributeDescription.data(); // Optional
 

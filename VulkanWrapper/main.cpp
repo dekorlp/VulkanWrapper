@@ -12,6 +12,7 @@
 #include "VulkanDrawing.h"
 #include "VulkanDebug.h"
 #include "VulkanMesh.h"
+#include "CustomVertex.h"
 #include <vector>
 
 
@@ -98,13 +99,15 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
-		vulkanPipeline.CreateDescriptorSetLayout();
-		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"));
-
 		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 		vulkanDrawing.CreateCommandPool();
+
+		CCustomVertex vertex;
+
+		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
+		vulkanPipeline.CreateDescriptorSetLayout();
+		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 
 		plane.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation, vulkanDrawing.GetCommandPool());
 

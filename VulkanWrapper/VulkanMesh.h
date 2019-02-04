@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "VulkanVertex.h"
+//#include "VulkanVertex.h"
+#include "CustomVertex.h"
 #include "vulkanqueuefamilie.h"
 #include "VulkanPipeline.h"
 #include "VulkanLogicalDevice.h"
@@ -17,7 +18,7 @@ class CVulkanMesh
 {
 public:
 	void Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPresentation presentation, VkCommandPool commandPool);
-	void CreateVertexBuffer(std::vector<SVulkanVertex> vertices);
+	void CreateVertexBuffer(std::vector<CCustomVertex> vertices);
 	void DestroyVertexBuffer();
 	void createIndexBuffer(const std::vector<uint16_t> indices);
 	void CreateUniformBuffer();
@@ -52,7 +53,7 @@ private:
 	VkDescriptorPool descriptorPool;
 	std::vector<VkDescriptorSet> descriptorSets;
 
-	std::vector<SVulkanVertex> m_Vertices;
+	std::vector<CCustomVertex> m_Vertices;
 	std::vector<uint16_t> m_Indices;
 
 	VkCommandBuffer m_SecondaryCommandBuffer;

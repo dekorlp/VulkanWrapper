@@ -81,7 +81,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 		//m_SecondaryCommandBuffer.push_back(secondaryCommandBuffer);
 }
 
-void CVulkanMesh::CreateVertexBuffer(const std::vector<SVulkanVertex> vertices)
+void CVulkanMesh::CreateVertexBuffer(const std::vector<CCustomVertex> vertices)
 {
 	m_Vertices = vertices;
 

@@ -10,7 +10,7 @@ class CVulkanPipeline
 {
 public:
 	void InitVulkanPipeline(CVulkanLogicalDevice device, CVulkanPresentation presentation);
-	void CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader);
+	void CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex);
 	VkShaderModule CreateShaderModule(const std::vector<char>& code);
 	void CreateDescriptorSetLayout();
 	void DestroyPipeline();

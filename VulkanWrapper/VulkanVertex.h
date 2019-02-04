@@ -1,10 +1,25 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <array>
+//#include <glm/glm.hpp>
+//#include <array>
 #include <vector>
 #include <vulkan\vulkan.h>
 
+class CVulkanVertex
+{
+	public:
 
+		std::vector<VkVertexInputBindingDescription> getBindingDescription();
+		std::vector<VkVertexInputAttributeDescription> getAttributeDescription();
+	protected:
+		void AddVertexInputBindingDescription(VkVertexInputBindingDescription bindingDescription);
+		void AddVertexInputAttributeDescription(VkVertexInputAttributeDescription AttributeDescription);
+
+		std::vector<VkVertexInputBindingDescription> m_VertexInputBindingDescription;
+		std::vector <VkVertexInputAttributeDescription> m_VertexInputAttributeDescription;
+};
+
+
+/*
 struct SVulkanVertex {
 	glm::vec2 pos;
 	glm::vec3 color;
@@ -30,7 +45,7 @@ struct SVulkanVertex {
 		attributeDescriptions[1].offset = offsetof(SVulkanVertex, color);
 		return attributeDescriptions;
 	}
-};
+};*/
 
 /*const std::vector<SVulkanVertex> vertices = {
 	{ { -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
