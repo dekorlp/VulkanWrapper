@@ -247,3 +247,8 @@ VkSwapchainKHR CVulkanPresentation::GetSwapChain()
 {
 	return m_SwapChain;
 }
+
+std::vector<VkImage> CVulkanPresentation::GetSwapChainImages()
+{
+	return swapChainImages;
+}

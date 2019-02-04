@@ -66,6 +66,11 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 
 		vkCmdBindIndexBuffer(m_SecondaryCommandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
+		for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++)
+		{
+			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
+		}
+
 		//vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 		vkCmdDrawIndexed(m_SecondaryCommandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 
@@ -120,6 +125,75 @@ void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
 	vkFreeMemory(m_LogicalDevice.getDevice(), stagingBufferMemory, nullptr);
 }
 
+void CVulkanMesh::CreateUniformBuffer()
+{
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+	uniformBuffers.resize(m_Presentation.GetSwapChainImages().size());
+	uniformBuffersMemory.resize(m_Presentation.GetSwapChainImages().size());
+
+	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+		CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+	}
+}
+
+void CVulkanMesh::CreateDescriptorPool()
+{
+	VkDescriptorPoolSize poolSize = {};
+	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	poolSize.descriptorCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+
+	VkDescriptorPoolCreateInfo poolInfo = {};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.poolSizeCount = 1;
+	poolInfo.pPoolSizes = &poolSize;
+	poolInfo.maxSets = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+
+	if (vkCreateDescriptorPool(m_LogicalDevice.getDevice(), &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor pool!");
+	}
+}
+
+void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
+{
+	std::vector<VkDescriptorSetLayout> layouts(m_Presentation.GetSwapChainImages().size(), pipeline.GetDescriptorSetLayout());
+	VkDescriptorSetAllocateInfo allocInfo = {};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = descriptorPool;
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	allocInfo.pSetLayouts = layouts.data();
+
+	descriptorSets.resize(m_Presentation.GetSwapChainImages().size());
+	if (vkAllocateDescriptorSets(m_LogicalDevice.getDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate descriptor sets!");
+	}
+
+	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+		VkDescriptorBufferInfo bufferInfo = {};
+		bufferInfo.buffer = uniformBuffers[i];
+		bufferInfo.offset = 0;
+		bufferInfo.range = sizeof(UniformBufferObject);
+
+		VkWriteDescriptorSet descriptorWrite = {};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = descriptorSets[i];
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+		descriptorWrite.pBufferInfo = &bufferInfo;
+		descriptorWrite.pImageInfo = nullptr; // Optional
+		descriptorWrite.pTexelBufferView = nullptr; // Optional
+		vkUpdateDescriptorSets(m_LogicalDevice.getDevice(), 1, &descriptorWrite, 0, nullptr);
+	}
+
+}
+
+void CVulkanMesh::DestroyDescriptorPool()
+{
+	vkDestroyDescriptorPool(m_LogicalDevice.getDevice(), descriptorPool, nullptr);
+}
+
 void CVulkanMesh::DestroyVertexBuffer()
 {
 	vkDestroyBuffer(m_LogicalDevice.getDevice(), vertexBuffer, nullptr);
@@ -132,6 +206,14 @@ void CVulkanMesh::DestroyIndexBuffer()
 	vkFreeMemory(m_LogicalDevice.getDevice(), indexBufferMemory, nullptr);
 }
 
+void CVulkanMesh::DestroyUniformBuffers()
+{
+	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+		vkDestroyBuffer(m_LogicalDevice.getDevice(), uniformBuffers[i], nullptr);
+		vkFreeMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[i], nullptr);
+	}
+}
+
 VkCommandBuffer* const CVulkanMesh::GetCommandBuffer()
 {
 	return &m_SecondaryCommandBuffer;
@@ -140,6 +222,34 @@ VkCommandBuffer* const CVulkanMesh::GetCommandBuffer()
 void CVulkanMesh::DestroySecondaryCommandBuffer()
 {
 	vkFreeCommandBuffers(m_LogicalDevice.getDevice(), m_CommandPool, static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
+}
+
+std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()
+{
+	return uniformBuffersMemory;
+}
+
+void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
+{
+	static auto startTime = std::chrono::high_resolution_clock::now();
+
+	auto currentTime = std::chrono::high_resolution_clock::now();
+	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+	UniformBufferObject ubo = {};
+	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	ubo.proj = glm::perspective(glm::radians(45.0f), m_Presentation.GetSwapChainExtend().width / (float)m_Presentation.GetSwapChainExtend().height, 0.1f, 10.0f);
+
+	ubo.proj[1][1] *= -1;
+
+	void* data;
+
+	vkMapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+	memcpy(data, &ubo, sizeof(ubo));
+	vkUnmapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage]);
 }
 
 bool CVulkanMesh::operator==(const CVulkanMesh& rhs) const

@@ -99,7 +99,8 @@ private:
 		vulkanPresentation.CreateRenderPass();
 
 		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
-		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/vert.spv"), readFile("shader/frag.spv"));
+		vulkanPipeline.CreateDescriptorSetLayout();
+		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"));
 
 		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
@@ -107,7 +108,6 @@ private:
 
 		plane.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation, vulkanDrawing.GetCommandPool());
 
-		
 		plane.CreateVertexBuffer(
 		{
 		{ { -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
@@ -119,7 +119,13 @@ private:
 		plane.createIndexBuffer({
 			0, 1, 2, 2, 3, 0,
 		});
+
+		plane.CreateUniformBuffer();
+		plane.CreateDescriptorPool();
+		plane.CreateDescriptorSet(vulkanPipeline);
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());
+
+		
 		vulkanDrawing.RegisterMesh(plane);
 
 		vulkanDrawing.CreateCommandBuffers();
@@ -134,8 +140,6 @@ private:
 		vulkanDrawing.DestroyFrameBuffers();
 		vulkanDrawing.DestroyCommandBuffers();
 		plane.DestroySecondaryCommandBuffer();
-		
-		vulkanPipeline.DestroyPipeline();
 		vulkanPresentation.DestroyRenderPass();
 		vulkanPresentation.DestroyImageViews();
 		vulkanPresentation.DestroySwapChain();
@@ -148,12 +152,11 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
-		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/vert.spv"), readFile("shader/frag.spv"));
 		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());
+		
 		vulkanDrawing.RegisterMesh(plane);
 		vulkanDrawing.CreateCommandBuffers();
 		
@@ -213,10 +216,13 @@ private:
 		plane.DestroySecondaryCommandBuffer();
 		vulkanDrawing.DestroyCommandBuffers();
 		vulkanDrawing.DestroyCommandPool();
+		plane.DestroyDescriptorPool();
+		plane.DestroyUniformBuffers();
 		plane.DestroyIndexBuffer();
 		plane.DestroyVertexBuffer();
 		vulkanDrawing.DestroyFrameBuffers();
 		vulkanPipeline.DestroyPipeline();
+		vulkanPipeline.DestroyDescriptorSetLayout();
 		vulkanPresentation.DestroyRenderPass();
 		vulkanPresentation.DestroyImageViews();
 		vulkanPresentation.DestroySwapChain();

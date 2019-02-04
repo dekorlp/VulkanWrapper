@@ -29,6 +29,7 @@ public:
 	VkExtent2D GetSwapChainExtend();
 	VkFormat GetSwapChainImageFormat();
 	std::vector<VkImageView> GetSwapChainImageViews();
+	std::vector<VkImage> GetSwapChainImages();
 	VkSwapchainKHR GetSwapChain();
 	void CreateRenderPass();
 	void DestroyRenderPass();

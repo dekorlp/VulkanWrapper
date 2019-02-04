@@ -159,6 +159,7 @@
     <ClCompile Include="VulkanValidationLayers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SUniformBufferObject.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanDrawing.h" />
     <ClInclude Include="VulkanInstance.h" />

@@ -167,6 +167,11 @@ void CVulkanDrawing::Draw()
 	uint32_t imageIndex;
 	vkAcquireNextImageKHR(m_LogicalDevice.getDevice(), m_Presentation.GetSwapChain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
+	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
+	{
+		m_VulkanMesh.at(i).UpdateUniformBuffers(imageIndex);
+	}
+
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 

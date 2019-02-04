@@ -28,7 +28,6 @@ public:
 	void CreateSyncObjects();
 	std::vector<VkFramebuffer> getFramebuffers();
 
-
 	VkCommandPool GetCommandPool();
 
 private:

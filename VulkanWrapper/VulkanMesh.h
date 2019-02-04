@@ -5,6 +5,13 @@
 #include "vulkanqueuefamilie.h"
 #include "VulkanPipeline.h"
 #include "VulkanLogicalDevice.h"
+#include "SUniformBufferObject.h"
+
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <chrono>
 
 class CVulkanMesh
 {
@@ -13,10 +20,18 @@ public:
 	void CreateVertexBuffer(std::vector<SVulkanVertex> vertices);
 	void DestroyVertexBuffer();
 	void createIndexBuffer(const std::vector<uint16_t> indices);
+	void CreateUniformBuffer();
+	void CreateDescriptorPool();
+	void CreateDescriptorSet(CVulkanPipeline pipeline);
 	void DestroyIndexBuffer();
 	void CreateSecondaryCommandBuffers(CVulkanPresentation presentation, CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer);
 	VkCommandBuffer* const GetCommandBuffer();
 	void DestroySecondaryCommandBuffer();
+	void DestroyUniformBuffers();
+	void DestroyDescriptorPool();
+	std::vector<VkDeviceMemory> GetUniformBuffersMemory();
+	void UpdateUniformBuffers(uint32_t currentImage);
+	void UpdateUniformBuffers();
 
 	bool operator==(const CVulkanMesh& rhs) const;
 
@@ -31,10 +46,18 @@ private:
 	VkBuffer indexBuffer;
 	VkDeviceMemory indexBufferMemory;
 
+	std::vector<VkBuffer> uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+
+	VkDescriptorPool descriptorPool;
+	std::vector<VkDescriptorSet> descriptorSets;
+
 	std::vector<SVulkanVertex> m_Vertices;
 	std::vector<uint16_t> m_Indices;
 
 	VkCommandBuffer m_SecondaryCommandBuffer;
 
 	VkCommandPool m_CommandPool;
+
+	UniformBufferObject ubo = {};
 };

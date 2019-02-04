@@ -69,7 +69,7 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f; // Optional
 	rasterizer.depthBiasClamp = 0.0f; // Optional
@@ -107,8 +107,8 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 0; // Optional
-	pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
+	pipelineLayoutInfo.setLayoutCount = 1; // Optional
+	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout; // Optional
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -171,11 +171,40 @@ VkShaderModule CVulkanPipeline::CreateShaderModule(const std::vector<char>& code
 	return shaderModule;
 }
 
+void CVulkanPipeline::CreateDescriptorSetLayout()
+{
+	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
+	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uboLayoutBinding.descriptorCount = 1;
+	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	layoutInfo.bindingCount = 1;
+	layoutInfo.pBindings = &uboLayoutBinding;
+
+	if (vkCreateDescriptorSetLayout(m_LogicalDevice.getDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+
+	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
+	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutInfo.setLayoutCount = 1;
+	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+}
+
 void CVulkanPipeline::DestroyPipeline()
 {
 	vkDestroyPipeline(m_LogicalDevice.getDevice(), graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(m_LogicalDevice.getDevice(), pipelineLayout, nullptr);
 	
+}
+
+void CVulkanPipeline::DestroyDescriptorSetLayout()
+{
+	vkDestroyDescriptorSetLayout(m_LogicalDevice.getDevice(), descriptorSetLayout, nullptr);
 }
 
 VkPipeline CVulkanPipeline::GetGraphicsPipeline()
@@ -186,4 +215,9 @@ VkPipeline CVulkanPipeline::GetGraphicsPipeline()
 VkPipelineLayout CVulkanPipeline::GetPipelineLayout()
 {
 	return pipelineLayout;
+}
+
+VkDescriptorSetLayout CVulkanPipeline::GetDescriptorSetLayout()
+{
+	return descriptorSetLayout;
 }
