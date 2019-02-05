@@ -165,7 +165,8 @@ void CVulkanDrawing::Draw()
 
 	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
 	{
-		m_VulkanMesh.at(i).UpdateUniformBuffers(imageIndex);
+		//m_VulkanMesh.at(i).UpdateUniformBuffers(imageIndex);
+		m_VulkanMesh.at(i).SetCurrentImage(imageIndex);
 	}
 
 	VkSubmitInfo submitInfo = {};
