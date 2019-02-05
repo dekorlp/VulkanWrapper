@@ -144,8 +144,6 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = m_Presentation.GetRenderPass();
 	pipelineInfo.subpass = 0;
-	pipelineInfo.renderPass = m_Presentation.GetRenderPass();
-	pipelineInfo.subpass = 0;
 
 	if (vkCreateGraphicsPipelines(m_LogicalDevice.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
