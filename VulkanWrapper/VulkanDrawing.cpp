@@ -153,6 +153,8 @@ void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
 	CreateCommandBuffers();
 }
 
+
+
 void CVulkanDrawing::Draw()
 {
 	vkWaitForFences(m_LogicalDevice.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
