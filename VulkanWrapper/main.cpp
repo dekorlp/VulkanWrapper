@@ -105,7 +105,7 @@ private:
 
 		CCustomVertex vertex;
 
-		vulkanPipeline.InitVulkanPipeline(&vulkanInstance, vulkanLogicalDevice);
+		vulkanPipeline.InitVulkanPipeline(&vulkanInstance);
 		vulkanPipeline.CreateDescriptorSetLayout();
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 
