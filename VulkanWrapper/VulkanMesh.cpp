@@ -32,8 +32,8 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 		inheritanceInfo.pipelineStatistics = 0;
 
 		VkViewport viewport;
-		viewport.height = static_cast<float>(m_Presentation.GetSwapChainExtend().width);
-		viewport.width = static_cast<float>(m_Presentation.GetSwapChainExtend().height);
+		viewport.height = static_cast<float>(m_Presentation.GetSwapChainExtend().height);
+		viewport.width = static_cast<float>(m_Presentation.GetSwapChainExtend().width);
 		viewport.minDepth = (float)0.0f;
 		viewport.maxDepth = (float)1.0f;
 		viewport.x = 0;
