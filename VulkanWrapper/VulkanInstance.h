@@ -64,6 +64,9 @@ public:
 	void SetSwapchainFrameBuffers(std::vector<VkFramebuffer> framebuffers);
 	std::vector<VkFramebuffer> GetSwapchainFrameBuffers();
 
+	void SetSelectedImageIndexToDraw(uint32_t selectedImageIndexToDraw);
+	uint32_t GetSelectedImageIndexToDraw();
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -88,7 +91,7 @@ private:
 	VkSwapchainKHR m_SwapChain;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
-
+	uint32_t m_SelectedImageIndexToDraw;
 
 	
 };

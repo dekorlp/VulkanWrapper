@@ -165,11 +165,12 @@ void CVulkanDrawing::Draw()
 
 	uint32_t imageIndex;
 	vkAcquireNextImageKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-	m_CurrentImageToDraw = imageIndex;
+	
 	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
 	{
 		//m_VulkanMesh.at(i).UpdateUniformBuffers(imageIndex);
-		m_VulkanMesh.at(i).SetCurrentImage(imageIndex);
+		//m_VulkanMesh.at(i).SetCurrentImage(imageIndex);
+		m_Instance->SetSelectedImageIndexToDraw(imageIndex);
 	}
 
 	VkSubmitInfo submitInfo = {};
@@ -247,5 +248,5 @@ std::vector<VkFramebuffer> CVulkanDrawing::getFramebuffers()
 
 uint32_t CVulkanDrawing::GetCurrentImageToDraw()
 {
-	return m_CurrentImageToDraw;
+	return m_Instance->GetSelectedImageIndexToDraw();
 }

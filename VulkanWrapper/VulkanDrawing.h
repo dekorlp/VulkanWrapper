@@ -52,5 +52,5 @@ private:
 
 	std::vector<CVulkanMesh> m_VulkanMesh;
 
-	uint32_t m_CurrentImageToDraw;
+	//uint32_t m_CurrentImageToDraw;
 };

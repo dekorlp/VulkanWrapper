@@ -249,14 +249,9 @@ void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 
 	void* data;
 	
-	vkMapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+	vkMapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[m_Instance->GetSelectedImageIndexToDraw()], 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage]);
-}
-
-void CVulkanMesh::SetCurrentImage(uint32_t currentImage)
-{
-	this->m_CurrentImage = currentImage;
+	vkUnmapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[m_Instance->GetSelectedImageIndexToDraw()]);
 }
 
 bool CVulkanMesh::operator==(const CVulkanMesh& rhs) const

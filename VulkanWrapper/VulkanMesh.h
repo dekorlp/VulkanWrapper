@@ -34,7 +34,6 @@ public:
 	void UpdateUniformBuffers(uint32_t currentImage);
 
 	bool operator==(const CVulkanMesh& rhs) const;
-	void SetCurrentImage(uint32_t currentImage);
 
 private:
 	//CVulkanPresentation m_Presentation;
@@ -62,6 +61,4 @@ private:
 	VkCommandPool m_CommandPool;
 
 	UniformBufferObject ubo = {};
-
-	uint32_t m_CurrentImage = 0;
 };

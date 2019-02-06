@@ -197,6 +197,16 @@ std::vector<VkFramebuffer> CVulkanInstance::GetSwapchainFrameBuffers()
 	return this->swapChainFramebuffers;
 }
 
+void CVulkanInstance::SetSelectedImageIndexToDraw(uint32_t selectedImageIndexToDraw)
+{
+	this->m_SelectedImageIndexToDraw = selectedImageIndexToDraw;
+}
+
+uint32_t CVulkanInstance::GetSelectedImageIndexToDraw()
+{
+	return this->m_SelectedImageIndexToDraw;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;
