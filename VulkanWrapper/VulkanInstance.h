@@ -46,6 +46,13 @@ public:
 	void SetRenderPass(VkRenderPass renderPass);
 	VkRenderPass GetRenderPass();
 
+	void SetGraphicsQueue(VkQueue graphicsQueue);
+	VkQueue GetGraphicsQueue();
+
+	void SetPresentQueue(VkQueue presentQueue);
+	VkQueue GetPresentQueue();
+
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -63,6 +70,8 @@ private:
 	VkExtent2D m_SwapChainExtent;
 	VkRenderPass m_renderPass;
 	VkDevice m_LogicalDevice;
+	VkQueue graphicsQueue;
+	VkQueue presentQueue;
 
 
 	

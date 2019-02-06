@@ -53,10 +53,6 @@ VkInstance CVulkanInstance::CreateVulkanInstance(std::string applicationName, ui
 	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 	extensions = std::vector<VkExtensionProperties>(extensionCount);
 	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
-	
-	
-
-
 
 	return instance;
 }
@@ -139,6 +135,26 @@ void CVulkanInstance::SetRenderPass(VkRenderPass renderPass)
 VkRenderPass CVulkanInstance::GetRenderPass()
 {
 	return this->m_renderPass;
+}
+
+void CVulkanInstance::SetGraphicsQueue(VkQueue graphicsQueue)
+{
+	this->graphicsQueue = graphicsQueue;
+}
+
+VkQueue CVulkanInstance::GetGraphicsQueue()
+{
+	return graphicsQueue;
+}
+
+void CVulkanInstance::SetPresentQueue(VkQueue presentQueue)
+{
+	this->presentQueue = presentQueue;
+}
+
+VkQueue CVulkanInstance::GetPresentQueue()
+{
+	return this->presentQueue;
 }
 
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)

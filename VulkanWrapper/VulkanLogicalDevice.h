@@ -16,7 +16,7 @@ public:
 	VkQueue GetPresentQueue();
 private:
 	//VkDevice m_Device; // LogicalDevice
-	VkQueue graphicsQueue;
-	VkQueue presentQueue;
+	//VkQueue graphicsQueue;
+	//VkQueue presentQueue;
 	CVulkanInstance *m_Instance;
 };

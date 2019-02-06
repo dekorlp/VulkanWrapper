@@ -57,9 +57,14 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 		throw std::runtime_error("failed to create logical device!");
 	}
 
+	VkQueue graphicsQueue;
+	VkQueue presentQueue;
+
 	vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
 	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
 
+	m_Instance->SetPresentQueue(presentQueue);
+	m_Instance->SetGraphicsQueue(graphicsQueue);
 	m_Instance->SetLogicalDevice(device);
 
 }
@@ -76,10 +81,10 @@ VkDevice CVulkanLogicalDevice::getDevice()
 
 VkQueue CVulkanLogicalDevice::GetGraphicsQueue()
 {
-	return graphicsQueue;
+	return m_Instance->GetGraphicsQueue();
 }
 
 VkQueue CVulkanLogicalDevice::GetPresentQueue()
 {
-	return presentQueue;
+	return m_Instance->GetPresentQueue();
 }

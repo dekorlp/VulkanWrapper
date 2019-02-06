@@ -99,7 +99,7 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
+		vulkanDrawing.Init(&vulkanInstance, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 		vulkanDrawing.CreateCommandPool();
 
@@ -155,7 +155,7 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanDrawing.Init(vulkanPhysicalDevice, vulkanLogicalDevice, vulkanPresentation);
+		vulkanDrawing.Init(&vulkanInstance, vulkanPresentation);
 		vulkanDrawing.CreateFrameBuffers();
 
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());

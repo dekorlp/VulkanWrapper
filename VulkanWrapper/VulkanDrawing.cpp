@@ -1,10 +1,11 @@
 #include "VulkanDrawing.h"
 
-void CVulkanDrawing::Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPresentation presentation)
+void CVulkanDrawing::Init(CVulkanInstance* instance, CVulkanPresentation presentation)
 {
-	m_LogicalDevice = logicalDevice;
+	//m_LogicalDevice = logicalDevice;
 	m_Presentation = presentation;
-	m_PhysicalDevice = physicalDevice;
+	//m_PhysicalDevice = physicalDevice;
+	m_Instance = instance;
 	m_VulkanMesh.clear();
 }
 
@@ -25,7 +26,7 @@ void CVulkanDrawing::CreateFrameBuffers()
 		framebufferInfo.width = m_Presentation.GetSwapChainExtend().width;
 		framebufferInfo.height = m_Presentation.GetSwapChainExtend().height;
 		framebufferInfo.layers = 1;
-		if (vkCreateFramebuffer(m_LogicalDevice.getDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+		if (vkCreateFramebuffer(m_Instance->GetLogicalDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
@@ -34,27 +35,27 @@ void CVulkanDrawing::CreateFrameBuffers()
 void CVulkanDrawing::DestroyFrameBuffers()
 {
 	for (auto framebuffer : swapChainFramebuffers) {
-		vkDestroyFramebuffer(m_LogicalDevice.getDevice(), framebuffer, nullptr);
+		vkDestroyFramebuffer(m_Instance->GetLogicalDevice(), framebuffer, nullptr);
 	}
 }
 
 void CVulkanDrawing::CreateCommandPool()
 {
-	SQueueFamilyIndices queueFamilyIndices = CVulkanQueueFamily::findQueueFamilies(m_PhysicalDevice.GetPhysicalDevice(), m_Presentation.GetSurface());
+	SQueueFamilyIndices queueFamilyIndices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Presentation.GetSurface());
 
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
 	poolInfo.flags = 0; // Optional
 
-	if (vkCreateCommandPool(m_LogicalDevice.getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+	if (vkCreateCommandPool(m_Instance->GetLogicalDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
 }
 
 void CVulkanDrawing::DestroyCommandPool()
 {
-	vkDestroyCommandPool(m_LogicalDevice.getDevice(), commandPool, nullptr);
+	vkDestroyCommandPool(m_Instance->GetLogicalDevice(), commandPool, nullptr);
 }
 
 void CVulkanDrawing::CreateCommandBuffers()
@@ -67,7 +68,7 @@ void CVulkanDrawing::CreateCommandBuffers()
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-	if (vkAllocateCommandBuffers(m_LogicalDevice.getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(m_Instance->GetLogicalDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
 	}
 
@@ -112,7 +113,7 @@ void CVulkanDrawing::CreateCommandBuffers()
 
 void CVulkanDrawing::DestroyCommandBuffers()
 {
-	vkFreeCommandBuffers(m_LogicalDevice.getDevice(), commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+	vkFreeCommandBuffers(m_Instance->GetLogicalDevice(), commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 }
 
 void CVulkanDrawing::CreateSemaphores()
@@ -124,8 +125,8 @@ void CVulkanDrawing::CreateSemaphores()
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		if (vkCreateSemaphore(m_LogicalDevice.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(m_LogicalDevice.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
+		if (vkCreateSemaphore(m_Instance->GetLogicalDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+			vkCreateSemaphore(m_Instance->GetLogicalDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
 
 			throw std::runtime_error("failed to create semaphores for a frame!");
 		}
@@ -135,9 +136,9 @@ void CVulkanDrawing::CreateSemaphores()
 void CVulkanDrawing::DestroySemaphores()
 {
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		vkDestroySemaphore(m_LogicalDevice.getDevice(), renderFinishedSemaphores[i], nullptr);
-		vkDestroySemaphore(m_LogicalDevice.getDevice(), imageAvailableSemaphores[i], nullptr);
-		vkDestroyFence(m_LogicalDevice.getDevice(), inFlightFences[i], nullptr);
+		vkDestroySemaphore(m_Instance->GetLogicalDevice(), renderFinishedSemaphores[i], nullptr);
+		vkDestroySemaphore(m_Instance->GetLogicalDevice(), imageAvailableSemaphores[i], nullptr);
+		vkDestroyFence(m_Instance->GetLogicalDevice(), inFlightFences[i], nullptr);
 	}
 }
 
@@ -157,11 +158,11 @@ void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
 
 void CVulkanDrawing::Draw()
 {
-	vkWaitForFences(m_LogicalDevice.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
-	vkResetFences(m_LogicalDevice.getDevice(), 1, &inFlightFences[currentFrame]);
+	vkWaitForFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
+	vkResetFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(m_LogicalDevice.getDevice(), m_Presentation.GetSwapChain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	vkAcquireNextImageKHR(m_Instance->GetLogicalDevice(), m_Presentation.GetSwapChain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 	m_CurrentImageToDraw = imageIndex;
 	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
 	{
@@ -187,9 +188,9 @@ void CVulkanDrawing::Draw()
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
-	vkResetFences(m_LogicalDevice.getDevice(), 1, &inFlightFences[currentFrame]);
+	vkResetFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame]);
 
-	if (vkQueueSubmit(m_LogicalDevice.GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
+	if (vkQueueSubmit(m_Instance->GetGraphicsQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
 	}
 
@@ -205,7 +206,7 @@ void CVulkanDrawing::Draw()
 	presentInfo.pImageIndices = &imageIndex;
 	presentInfo.pResults = nullptr; // Optional
 
-	vkQueuePresentKHR(m_LogicalDevice.GetPresentQueue(), &presentInfo);
+	vkQueuePresentKHR(m_Instance->GetPresentQueue(), &presentInfo);
 
 	currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 	
@@ -224,9 +225,9 @@ void CVulkanDrawing::CreateSyncObjects() {
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		if (vkCreateSemaphore(m_LogicalDevice.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(m_LogicalDevice.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
-			vkCreateFence(m_LogicalDevice.getDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
+		if (vkCreateSemaphore(m_Instance->GetLogicalDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+			vkCreateSemaphore(m_Instance->GetLogicalDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS ||
+			vkCreateFence(m_Instance->GetLogicalDevice(), &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create synchronization objects for a frame!");
 		}
 	}
