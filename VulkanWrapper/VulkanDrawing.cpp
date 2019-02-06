@@ -1,9 +1,8 @@
 #include "VulkanDrawing.h"
 
-void CVulkanDrawing::Init(CVulkanInstance* instance, CVulkanPresentation presentation)
+void CVulkanDrawing::Init(CVulkanInstance* instance)
 {
 	//m_LogicalDevice = logicalDevice;
-	m_Presentation = presentation;
 	//m_PhysicalDevice = physicalDevice;
 	m_Instance = instance;
 	m_VulkanMesh.clear();
@@ -11,20 +10,21 @@ void CVulkanDrawing::Init(CVulkanInstance* instance, CVulkanPresentation present
 
 void CVulkanDrawing::CreateFrameBuffers()
 {
-	swapChainFramebuffers.resize(m_Presentation.GetSwapChainImageViews().size());
+	
+	swapChainFramebuffers.resize(m_Instance->GetSwapChainImageView().size());
 
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImageViews().size(); i++) {
+	for (size_t i = 0; i < m_Instance->GetSwapChainImageView().size(); i++) {
 		VkImageView attachments[] = {
-			m_Presentation.GetSwapChainImageViews()[i]
+			m_Instance->GetSwapChainImageView()[i]
 		};
 
 		VkFramebufferCreateInfo framebufferInfo = {};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = m_Presentation.GetRenderPass();
+		framebufferInfo.renderPass = m_Instance->GetRenderPass();
 		framebufferInfo.attachmentCount = 1;
 		framebufferInfo.pAttachments = attachments;
-		framebufferInfo.width = m_Presentation.GetSwapChainExtend().width;
-		framebufferInfo.height = m_Presentation.GetSwapChainExtend().height;
+		framebufferInfo.width = m_Instance->GetSwapchainExtend().width;
+		framebufferInfo.height = m_Instance->GetSwapchainExtend().height;
 		framebufferInfo.layers = 1;
 		if (vkCreateFramebuffer(m_Instance->GetLogicalDevice(), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
@@ -41,7 +41,7 @@ void CVulkanDrawing::DestroyFrameBuffers()
 
 void CVulkanDrawing::CreateCommandPool()
 {
-	SQueueFamilyIndices queueFamilyIndices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Presentation.GetSurface());
+	SQueueFamilyIndices queueFamilyIndices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -84,10 +84,10 @@ void CVulkanDrawing::CreateCommandBuffers()
 
 		VkRenderPassBeginInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = m_Presentation.GetRenderPass();
+		renderPassInfo.renderPass = m_Instance->GetRenderPass();
 		renderPassInfo.framebuffer = swapChainFramebuffers[i];
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = m_Presentation.GetSwapChainExtend();
+		renderPassInfo.renderArea.extent = m_Instance->GetSwapchainExtend();
 		
 		// background color
 		VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -162,7 +162,7 @@ void CVulkanDrawing::Draw()
 	vkResetFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR(m_Instance->GetLogicalDevice(), m_Presentation.GetSwapChain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+	vkAcquireNextImageKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 	m_CurrentImageToDraw = imageIndex;
 	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
 	{
@@ -200,7 +200,7 @@ void CVulkanDrawing::Draw()
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
 	
-	VkSwapchainKHR swapChains[] = { m_Presentation.GetSwapChain() };
+	VkSwapchainKHR swapChains[] = { m_Instance->GetSwapchain() };
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapChains;
 	presentInfo.pImageIndices = &imageIndex;

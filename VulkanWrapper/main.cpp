@@ -99,13 +99,13 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanDrawing.Init(&vulkanInstance, vulkanPresentation);
+		vulkanDrawing.Init(&vulkanInstance);
 		vulkanDrawing.CreateFrameBuffers();
 		vulkanDrawing.CreateCommandPool();
 
 		CCustomVertex vertex;
 
-		vulkanPipeline.InitVulkanPipeline(&vulkanInstance, vulkanLogicalDevice);
+		vulkanPipeline.InitVulkanPipeline(&vulkanInstance);
 		vulkanPipeline.CreateDescriptorSetLayout();
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 
@@ -138,7 +138,7 @@ private:
 
 	void recreateSwapChain(int resizeWith, int resizeHeight)
 	{
-		vkDeviceWaitIdle(vulkanLogicalDevice.getDevice());
+		vkDeviceWaitIdle(vulkanInstance.GetLogicalDevice());
 
 		vulkanDrawing.DestroyFrameBuffers();
 		vulkanDrawing.DestroyCommandBuffers();
@@ -155,7 +155,7 @@ private:
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
-		vulkanDrawing.Init(&vulkanInstance, vulkanPresentation);
+		vulkanDrawing.Init(&vulkanInstance);
 		vulkanDrawing.CreateFrameBuffers();
 
 		plane.CreateSecondaryCommandBuffers(vulkanPresentation, vulkanPipeline, vulkanDrawing.getFramebuffers());

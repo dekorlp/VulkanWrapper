@@ -118,26 +118,31 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	if (vkCreateSwapchainKHR(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS) {
+	VkSwapchainKHR swapchain;
+	if (vkCreateSwapchainKHR(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &swapchain) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create swap chain!");
 	}
+	m_Instance->SetSwapchain(swapchain);
 
-	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), &imageCount, swapChainImages.data());
 
 	swapChainImageFormat = surfaceFormat.format;
-	swapChainExtent = extent;
+	//swapChainExtent = extent;
 }
 
 void CVulkanPresentation::DestroySwapChain()
 {
-	vkDestroySwapchainKHR(m_Instance->GetLogicalDevice(), m_SwapChain, nullptr);
+	vkDestroySwapchainKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), nullptr);
 }
 
 void CVulkanPresentation::CreateImageViews()
 {
-	swapChainImageViews.resize(swapChainImages.size());
+
+		std::vector<VkImageView> swapChainImageViews;
+
+		swapChainImageViews.resize(swapChainImages.size());
 
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
 		VkImageViewCreateInfo createInfo = {};
@@ -157,9 +162,12 @@ void CVulkanPresentation::CreateImageViews()
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
+		
 		if (vkCreateImageView(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
 		}
+
+		m_Instance->SetSwapChainImageViews(swapChainImageViews);
 	}
 
 }
@@ -229,14 +237,14 @@ VkRenderPass CVulkanPresentation::GetRenderPass()
 
 void CVulkanPresentation::DestroyImageViews()
 {
-	for (auto imageView : swapChainImageViews) {
+	for (auto imageView : m_Instance->GetSwapChainImageView()) {
 		vkDestroyImageView(m_Instance->GetLogicalDevice(), imageView, nullptr);
 	}
 }
 
 VkExtent2D CVulkanPresentation::GetSwapChainExtend()
 {
-	return this->swapChainExtent;
+	return m_Instance->GetSwapchainExtend();
 }
 
 VkFormat CVulkanPresentation::GetSwapChainImageFormat()
@@ -246,12 +254,12 @@ VkFormat CVulkanPresentation::GetSwapChainImageFormat()
 
 std::vector<VkImageView> CVulkanPresentation::GetSwapChainImageViews()
 {
-	return swapChainImageViews;
+	return  m_Instance->GetSwapChainImageView();
 }
 
 VkSwapchainKHR CVulkanPresentation::GetSwapChain()
 {
-	return m_SwapChain;
+	return  m_Instance->GetSwapchain();
 }
 
 std::vector<VkImage> CVulkanPresentation::GetSwapChainImages()

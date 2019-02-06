@@ -1,10 +1,8 @@
 #include "VulkanPipeline.h"
 
-void CVulkanPipeline::InitVulkanPipeline(CVulkanInstance* instance, CVulkanLogicalDevice device)
+void CVulkanPipeline::InitVulkanPipeline(CVulkanInstance* instance)
 {
-	m_LogicalDevice = device;
 	m_Instance = instance;
-	//m_Presentation = instance.get
 }
 
 void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex)
@@ -115,7 +113,7 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 
 
 
-	if (vkCreatePipelineLayout(m_LogicalDevice.getDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+	if (vkCreatePipelineLayout(m_Instance->GetLogicalDevice(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create pipeline layout!");
 	}
 
@@ -146,12 +144,12 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 	pipelineInfo.renderPass = m_Instance->GetRenderPass();
 	pipelineInfo.subpass = 0;
 	
-	if (vkCreateGraphicsPipelines(m_LogicalDevice.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+	if (vkCreateGraphicsPipelines(m_Instance->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
-	vkDestroyShaderModule(m_LogicalDevice.getDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(m_LogicalDevice.getDevice(), vertShaderModule, nullptr);
+	vkDestroyShaderModule(m_Instance->GetLogicalDevice(), fragShaderModule, nullptr);
+	vkDestroyShaderModule(m_Instance->GetLogicalDevice(), vertShaderModule, nullptr);
 
 }
 
@@ -163,7 +161,7 @@ VkShaderModule CVulkanPipeline::CreateShaderModule(const std::vector<char>& code
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(m_LogicalDevice.getDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
+	if (vkCreateShaderModule(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create shader module!");
 	}
 
@@ -184,21 +182,21 @@ void CVulkanPipeline::CreateDescriptorSetLayout()
 	layoutInfo.bindingCount = 1;
 	layoutInfo.pBindings = &uboLayoutBinding;
 
-	if (vkCreateDescriptorSetLayout(m_LogicalDevice.getDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+	if (vkCreateDescriptorSetLayout(m_Instance->GetLogicalDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor set layout!");
 	}
 }
 
 void CVulkanPipeline::DestroyPipeline()
 {
-	vkDestroyPipeline(m_LogicalDevice.getDevice(), graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(m_LogicalDevice.getDevice(), pipelineLayout, nullptr);
+	vkDestroyPipeline(m_Instance->GetLogicalDevice(), graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(m_Instance->GetLogicalDevice(), pipelineLayout, nullptr);
 	
 }
 
 void CVulkanPipeline::DestroyDescriptorSetLayout()
 {
-	vkDestroyDescriptorSetLayout(m_LogicalDevice.getDevice(), descriptorSetLayout, nullptr);
+	vkDestroyDescriptorSetLayout(m_Instance->GetLogicalDevice(), descriptorSetLayout, nullptr);
 }
 
 VkPipeline CVulkanPipeline::GetGraphicsPipeline()
