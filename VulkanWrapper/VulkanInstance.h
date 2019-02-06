@@ -61,6 +61,9 @@ public:
 	void SetSwapchainImages(std::vector<VkImage> images);
 	std::vector<VkImage> GetSwapchainImages();
 
+	void SetSwapchainFrameBuffers(std::vector<VkFramebuffer> framebuffers);
+	std::vector<VkFramebuffer> GetSwapchainFrameBuffers();
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -84,6 +87,7 @@ private:
 	std::vector<VkImageView> swapChainImageViews;
 	VkSwapchainKHR m_SwapChain;
 	std::vector<VkImage> swapChainImages;
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 
 
 	

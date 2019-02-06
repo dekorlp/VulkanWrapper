@@ -10,7 +10,7 @@ void CVulkanDrawing::Init(CVulkanInstance* instance)
 
 void CVulkanDrawing::CreateFrameBuffers()
 {
-	
+	std::vector<VkFramebuffer> swapChainFramebuffers;
 	swapChainFramebuffers.resize(m_Instance->GetSwapChainImageView().size());
 
 	for (size_t i = 0; i < m_Instance->GetSwapChainImageView().size(); i++) {
@@ -30,11 +30,13 @@ void CVulkanDrawing::CreateFrameBuffers()
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
+
+	m_Instance->SetSwapchainFrameBuffers(swapChainFramebuffers);
 }
 
 void CVulkanDrawing::DestroyFrameBuffers()
 {
-	for (auto framebuffer : swapChainFramebuffers) {
+	for (auto framebuffer : m_Instance->GetSwapchainFrameBuffers()) {
 		vkDestroyFramebuffer(m_Instance->GetLogicalDevice(), framebuffer, nullptr);
 	}
 }
@@ -60,7 +62,7 @@ void CVulkanDrawing::DestroyCommandPool()
 
 void CVulkanDrawing::CreateCommandBuffers()
 {
-	commandBuffers.resize(swapChainFramebuffers.size());
+	commandBuffers.resize(m_Instance->GetSwapchainFrameBuffers().size());
 
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -85,7 +87,7 @@ void CVulkanDrawing::CreateCommandBuffers()
 		VkRenderPassBeginInfo renderPassInfo = {};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = m_Instance->GetRenderPass();
-		renderPassInfo.framebuffer = swapChainFramebuffers[i];
+		renderPassInfo.framebuffer = m_Instance->GetSwapchainFrameBuffers()[i];
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = m_Instance->GetSwapchainExtend();
 		
@@ -240,7 +242,7 @@ VkCommandPool CVulkanDrawing::GetCommandPool()
 
 std::vector<VkFramebuffer> CVulkanDrawing::getFramebuffers()
 {
-	return swapChainFramebuffers;
+	return m_Instance->GetSwapchainFrameBuffers();
 }
 
 uint32_t CVulkanDrawing::GetCurrentImageToDraw()

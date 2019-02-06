@@ -187,6 +187,16 @@ std::vector<VkImage> CVulkanInstance::GetSwapchainImages()
 	return this->swapChainImages;
 }
 
+void CVulkanInstance::SetSwapchainFrameBuffers(std::vector<VkFramebuffer> framebuffers)
+{
+	this->swapChainFramebuffers = framebuffers;
+}
+
+std::vector<VkFramebuffer> CVulkanInstance::GetSwapchainFrameBuffers()
+{
+	return this->swapChainFramebuffers;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;

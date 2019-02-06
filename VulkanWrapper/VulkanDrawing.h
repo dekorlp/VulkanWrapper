@@ -32,7 +32,7 @@ public:
 	VkCommandPool GetCommandPool();
 
 private:
-	std::vector<VkFramebuffer> swapChainFramebuffers;
+	//std::vector<VkFramebuffer> swapChainFramebuffers;
 	//CVulkanLogicalDevice m_LogicalDevice;
 	//CVulkanPipeline m_Pipeline;
 	//CVulkanPresentation m_Presentation;

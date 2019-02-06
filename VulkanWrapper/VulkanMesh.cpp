@@ -9,7 +9,7 @@ void CVulkanMesh::Init(CVulkanInstance* instance, VkCommandPool commandPool)
 	m_CommandPool = commandPool;
 }
 
-void CVulkanMesh::CreateSecondaryCommandBuffers( CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer)
+void CVulkanMesh::CreateSecondaryCommandBuffers( CVulkanPipeline pipeline)
 {
 
 		VkCommandBufferAllocateInfo allocInfo = {};
