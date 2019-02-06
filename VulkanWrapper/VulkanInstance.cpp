@@ -187,6 +187,16 @@ std::vector<VkImage>  CVulkanInstance::GetSwapchainImages()
 	return this->swapChainImages;
 }
 
+void CVulkanInstance::SetSelectedImageToDraw(uint32_t selectedImageToDraw)
+{
+	this->m_SelectedImageToDraw = selectedImageToDraw;
+}
+
+uint32_t CVulkanInstance::GetSelectedImageToDraw()
+{
+	return this->m_SelectedImageToDraw;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;

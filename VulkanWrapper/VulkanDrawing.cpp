@@ -164,18 +164,17 @@ void CVulkanDrawing::UnregisterMesh(CVulkanMesh* mesh)
 
 
 
-void CVulkanDrawing::Draw()
+void CVulkanDrawing::DrawFrame()
 {
 	vkWaitForFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 	vkResetFences(m_Instance->GetLogicalDevice(), 1, &inFlightFences[currentFrame]);
 
 	uint32_t imageIndex;
 	vkAcquireNextImageKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), std::numeric_limits<uint64_t>::max(), imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-	m_CurrentImageToDraw = imageIndex;
+
 	for(unsigned int i = 0; i < m_VulkanMesh.size(); i++)
 	{
-		//m_VulkanMesh.at(i).UpdateUniformBuffers(imageIndex);
-		m_VulkanMesh.at(i).SetCurrentImage(imageIndex);
+		m_Instance->SetSelectedImageToDraw(imageIndex);
 	}
 
 	VkSubmitInfo submitInfo = {};
@@ -249,9 +248,4 @@ VkCommandPool CVulkanDrawing::GetCommandPool()
 std::vector<VkFramebuffer> CVulkanDrawing::getFramebuffers()
 {
 	return swapChainFramebuffers;
-}
-
-uint32_t CVulkanDrawing::GetCurrentImageToDraw()
-{
-	return m_CurrentImageToDraw;
 }

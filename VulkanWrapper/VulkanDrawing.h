@@ -24,10 +24,9 @@ public:
 	void DestroySemaphores();
 	void RegisterMesh(CVulkanMesh* commandBuffer);
 	void UnregisterMesh(CVulkanMesh* commandBuffer);
-	void Draw();
+	void DrawFrame();
 	void CreateSyncObjects();
 	std::vector<VkFramebuffer> getFramebuffers();
-	uint32_t GetCurrentImageToDraw();
 
 	VkCommandPool GetCommandPool();
 
@@ -51,6 +50,4 @@ private:
 	std::vector<VkFence> inFlightFences;
 
 	std::vector<CVulkanMesh> m_VulkanMesh;
-
-	uint32_t m_CurrentImageToDraw;
 };

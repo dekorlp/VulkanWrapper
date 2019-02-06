@@ -25,13 +25,13 @@ public:
 	void CreateDescriptorPool();
 	void CreateDescriptorSet(CVulkanPipeline pipeline);
 	void DestroyIndexBuffer();
-	void CreateSecondaryCommandBuffers(CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer);
+	void CreateSecondaryCommandBuffers(CVulkanPipeline pipeline);
 	VkCommandBuffer* const GetCommandBuffer();
 	void DestroySecondaryCommandBuffer();
 	void DestroyUniformBuffers();
 	void DestroyDescriptorPool();
 	std::vector<VkDeviceMemory> GetUniformBuffersMemory();
-	void UpdateUniformBuffers(uint32_t currentImage);
+	void UpdateUniformBuffers();
 
 	bool operator==(const CVulkanMesh& rhs) const;
 

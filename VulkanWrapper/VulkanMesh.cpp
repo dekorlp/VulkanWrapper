@@ -9,7 +9,7 @@ void CVulkanMesh::Init(CVulkanInstance* instance, VkCommandPool commandPool)
 	m_CommandPool = commandPool;
 }
 
-void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer)
+void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
 {
 
 		VkCommandBufferAllocateInfo allocInfo = {};
@@ -231,7 +231,7 @@ std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()
 }
 
 
-void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
+void CVulkanMesh::UpdateUniformBuffers()
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -248,10 +248,10 @@ void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 	ubo.proj[1][1] *= -1;
 
 	void* data;
-	
-	vkMapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+
+	vkMapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[m_Instance->GetSelectedImageToDraw()], 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage]);
+	vkUnmapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[m_Instance->GetSelectedImageToDraw()]);
 }
 
 void CVulkanMesh::SetCurrentImage(uint32_t currentImage)

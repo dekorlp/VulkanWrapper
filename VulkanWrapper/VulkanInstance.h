@@ -61,6 +61,9 @@ public:
 	void SetSwapchainImages(std::vector<VkImage> swapChainImages);
 	std::vector<VkImage> GetSwapchainImages();
 
+	void SetSelectedImageToDraw(uint32_t selectedImageToDraw);
+	uint32_t GetSelectedImageToDraw();
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -85,5 +88,5 @@ private:
 	VkSwapchainKHR m_SwapChain;
 	std::vector<VkImage> swapChainImages;
 
-	
+	uint32_t m_SelectedImageToDraw;
 };

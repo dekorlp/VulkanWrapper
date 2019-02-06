@@ -125,7 +125,7 @@ private:
 		plane.CreateUniformBuffer();
 		plane.CreateDescriptorPool();
 		plane.CreateDescriptorSet(vulkanPipeline);
-		plane.CreateSecondaryCommandBuffers(vulkanPipeline, vulkanDrawing.getFramebuffers());
+		plane.CreateSecondaryCommandBuffers(vulkanPipeline);
 
 		
 		vulkanDrawing.RegisterMesh(&plane);
@@ -157,7 +157,7 @@ private:
 		vulkanDrawing.Init(&vulkanInstance);
 		vulkanDrawing.CreateFrameBuffers();
 
-		plane.CreateSecondaryCommandBuffers(vulkanPipeline, vulkanDrawing.getFramebuffers());
+		plane.CreateSecondaryCommandBuffers(vulkanPipeline);
 		
 		vulkanDrawing.RegisterMesh(&plane);
 		vulkanDrawing.CreateCommandBuffers();
@@ -202,8 +202,8 @@ private:
 				}
 			}
 			
-			vulkanDrawing.Draw();
-			plane.UpdateUniformBuffers(vulkanDrawing.GetCurrentImageToDraw());
+			vulkanDrawing.DrawFrame();
+			plane.UpdateUniformBuffers(0);
 		}
 
 		// wait until operations are finished
