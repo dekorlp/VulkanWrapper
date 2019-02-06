@@ -126,9 +126,9 @@ void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
 	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
-void CVulkanMesh::CreateUniformBuffer()
+void CVulkanMesh::CreateUniformBuffer(size_t uniformBufferSize)
 {
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+	VkDeviceSize bufferSize = uniformBufferSize;
 
 	uniformBuffers.resize(m_Instance->GetSwapchainImages().size());
 	uniformBuffersMemory.resize(m_Instance->GetSwapchainImages().size());
@@ -155,7 +155,7 @@ void CVulkanMesh::CreateDescriptorPool()
 	}
 }
 
-void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
+void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize)
 {
 	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), pipeline.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo = {};
@@ -173,7 +173,7 @@ void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
 		VkDescriptorBufferInfo bufferInfo = {};
 		bufferInfo.buffer = uniformBuffers[i];
 		bufferInfo.offset = 0;
-		bufferInfo.range = sizeof(UniformBufferObject);
+		bufferInfo.range = uniformBufferSize;
 
 		VkWriteDescriptorSet descriptorWrite = {};
 		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

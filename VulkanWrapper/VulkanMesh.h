@@ -6,7 +6,6 @@
 #include "vulkanqueuefamilie.h"
 #include "VulkanPipeline.h"
 #include "VulkanLogicalDevice.h"
-#include "SUniformBufferObject.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -21,9 +20,9 @@ public:
 	void CreateVertexBuffer(std::vector<CCustomVertex> vertices);
 	void DestroyVertexBuffer();
 	void createIndexBuffer(const std::vector<uint16_t> indices);
-	void CreateUniformBuffer();
+	void CreateUniformBuffer(size_t uniformBufferSize);
 	void CreateDescriptorPool();
-	void CreateDescriptorSet(CVulkanPipeline pipeline);
+	void CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize);
 	void DestroyIndexBuffer();
 	void CreateSecondaryCommandBuffers(CVulkanPipeline pipeline);
 	VkCommandBuffer* const GetCommandBuffer();
@@ -68,8 +67,6 @@ private:
 	VkCommandBuffer m_SecondaryCommandBuffer;
 
 	VkCommandPool m_CommandPool;
-
-	UniformBufferObject ubo = {};
 
 	uint32_t m_CurrentImage = 0;
 };

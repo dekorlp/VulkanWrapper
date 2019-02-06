@@ -13,6 +13,7 @@
 #include "VulkanDebug.h"
 #include "VulkanMesh.h"
 #include "CustomVertex.h"
+#include "SUniformBufferObject.h"
 #include <vector>
 
 
@@ -122,9 +123,9 @@ private:
 			0, 1, 2, 2, 3, 0,
 		});
 
-		plane.CreateUniformBuffer();
+		plane.CreateUniformBuffer(sizeof(UniformBufferObject));
 		plane.CreateDescriptorPool();
-		plane.CreateDescriptorSet(vulkanPipeline);
+		plane.CreateDescriptorSet(vulkanPipeline, sizeof(UniformBufferObject));
 		plane.CreateSecondaryCommandBuffers(vulkanPipeline);
 
 		
