@@ -230,7 +230,7 @@ std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()
 }
 
 
-void CVulkanMesh::UpdateUniformBuffers()
+void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 {
 	static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -247,10 +247,10 @@ void CVulkanMesh::UpdateUniformBuffers()
 	ubo.proj[1][1] *= -1;
 
 	void* data;
-
-	vkMapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[this->m_CurrentImage], 0, sizeof(ubo), 0, &data);
+	
+	vkMapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[this->m_CurrentImage]);
+	vkUnmapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage]);
 }
 
 void CVulkanMesh::SetCurrentImage(uint32_t currentImage)

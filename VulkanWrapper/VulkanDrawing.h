@@ -27,6 +27,7 @@ public:
 	void Draw();
 	void CreateSyncObjects();
 	std::vector<VkFramebuffer> getFramebuffers();
+	uint32_t GetCurrentImageToDraw();
 
 	VkCommandPool GetCommandPool();
 
@@ -49,4 +50,6 @@ private:
 	std::vector<VkFence> inFlightFences;
 
 	std::vector<CVulkanMesh> m_VulkanMesh;
+
+	uint32_t m_CurrentImageToDraw;
 };

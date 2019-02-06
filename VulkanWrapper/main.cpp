@@ -206,7 +206,7 @@ private:
 			}
 			
 			vulkanDrawing.Draw();
-			plane.UpdateUniformBuffers();
+			plane.UpdateUniformBuffers(vulkanDrawing.GetCurrentImageToDraw());
 		}
 
 		// wait until operations are finished
