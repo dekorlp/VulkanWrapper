@@ -1,9 +1,9 @@
 #include "VulkanDebug.h"
 
-void CVulkanDebug::SetupVulkanDebug(CVulkanInstance* instance)
+void CVulkanDebug::SetupVulkanDebug(CVulkanInstance instance)
 {
-	m_Instance = instance->GetInstance();
-	m_AreValidationLayersEnables = instance->IsvalidationLayerEnabled();
+	m_Instance = instance.GetInstance();
+	m_AreValidationLayersEnables = instance.IsvalidationLayerEnabled();
 }
 
 void CVulkanDebug::SetupDebugCallback( void* debugCallback)

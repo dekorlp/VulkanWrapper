@@ -7,7 +7,7 @@
 class CVulkanDebug
 {
 public:
-	void SetupVulkanDebug(CVulkanInstance* instance);
+	void SetupVulkanDebug(CVulkanInstance instance);
 	void SetupDebugCallback( void* debugCallback);
 	VkResult CreateDebugUtilsMessengerEXT (const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pCallback);
 	void DestroyDebugUtilsMessengerEXT(const VkAllocationCallbacks* pAllocator);

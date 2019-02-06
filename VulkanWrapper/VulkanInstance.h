@@ -30,12 +30,21 @@ public:
 	const bool IsvalidationLayerEnabled();
 	const std::vector<const char*> GetValidationLayers();
 
+	//////////////////////////////////////////
+	void SetPhysicalDevice(VkPhysicalDevice physicalDevice);
+	VkPhysicalDevice GetPhysicalDevice();
+
+
 private: 
 	VkInstance instance;
 	std::vector<VkExtensionProperties> extensions;
 	std::vector<const char*> extensionStr;
 	CVulkanValidationLayers validationLayers;
 	bool areValidationLayersEnables;
+
+
+	///////////////////////////////////////////
+	VkPhysicalDevice m_PhysicalDevice;
 
 	
 };

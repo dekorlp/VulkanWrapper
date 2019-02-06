@@ -90,3 +90,13 @@ const std::vector<const char*> CVulkanInstance::GetValidationLayers()
 {
 	return validationLayers.GetValidationLayers();
 }
+
+void CVulkanInstance::SetPhysicalDevice(VkPhysicalDevice physicalDevice)
+{
+	this->m_PhysicalDevice = physicalDevice;
+}
+
+VkPhysicalDevice CVulkanInstance::GetPhysicalDevice()
+{
+	return this->m_PhysicalDevice;
+}
