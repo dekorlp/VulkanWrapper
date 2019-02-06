@@ -117,14 +117,16 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 	createInfo.clipped = VK_TRUE;
 
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
-
-	if (vkCreateSwapchainKHR(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS) {
+	VkSwapchainKHR swapChain;
+	if (vkCreateSwapchainKHR(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create swap chain!");
 	}
+	m_Instance->SetSwapchain(swapChain);
 
-	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, nullptr);
+
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), &imageCount, swapChainImages.data());
 
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
@@ -132,11 +134,12 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 
 void CVulkanPresentation::DestroySwapChain()
 {
-	vkDestroySwapchainKHR(m_Instance->GetLogicalDevice(), m_SwapChain, nullptr);
+	vkDestroySwapchainKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), nullptr);
 }
 
 void CVulkanPresentation::CreateImageViews()
 {
+	std::vector<VkImageView> swapChainImageViews;
 	swapChainImageViews.resize(swapChainImages.size());
 
 	for (size_t i = 0; i < swapChainImages.size(); i++) {
@@ -161,6 +164,8 @@ void CVulkanPresentation::CreateImageViews()
 			throw std::runtime_error("failed to create image views!");
 		}
 	}
+
+	m_Instance->SetSwapchainImageViews(swapChainImageViews);
 
 }
 
@@ -229,7 +234,7 @@ VkRenderPass CVulkanPresentation::GetRenderPass()
 
 void CVulkanPresentation::DestroyImageViews()
 {
-	for (auto imageView : swapChainImageViews) {
+	for (auto imageView : m_Instance->GetSwapchainImageViews()) {
 		vkDestroyImageView(m_Instance->GetLogicalDevice(), imageView, nullptr);
 	}
 }
@@ -246,12 +251,12 @@ VkFormat CVulkanPresentation::GetSwapChainImageFormat()
 
 std::vector<VkImageView> CVulkanPresentation::GetSwapChainImageViews()
 {
-	return swapChainImageViews;
+	return m_Instance->GetSwapchainImageViews();
 }
 
 VkSwapchainKHR CVulkanPresentation::GetSwapChain()
 {
-	return m_SwapChain;
+	return m_Instance->GetSwapchain();
 }
 
 std::vector<VkImage> CVulkanPresentation::GetSwapChainImages()

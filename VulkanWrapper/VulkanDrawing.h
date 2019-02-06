@@ -13,7 +13,7 @@
 class CVulkanDrawing
 {
 public:
-	void Init(CVulkanInstance* instance, CVulkanPresentation presentation);
+	void Init(CVulkanInstance* instance);
 	void CreateFrameBuffers();
 	void DestroyFrameBuffers();
 	void CreateCommandPool();
@@ -35,7 +35,7 @@ private:
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	//CVulkanLogicalDevice m_LogicalDevice;
 	//CVulkanPipeline m_Pipeline;
-	CVulkanPresentation m_Presentation;
+	//CVulkanPresentation m_Presentation;
 	//CVulkanPhysicalDevice m_PhysicalDevice;
 	CVulkanInstance* m_Instance;
 	VkCommandPool commandPool;

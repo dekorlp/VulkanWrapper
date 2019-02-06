@@ -52,6 +52,11 @@ public:
 	void SetPresentQueue(VkQueue presentQueue);
 	VkQueue GetPresentQueue();
 
+	void SetSwapchainImageViews(std::vector<VkImageView> swapChainImageViews);
+	std::vector<VkImageView> GetSwapchainImageViews();
+
+	void SetSwapchain(VkSwapchainKHR swapChain);
+	VkSwapchainKHR GetSwapchain();
 
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
@@ -73,6 +78,8 @@ private:
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
 
+	std::vector<VkImageView> swapChainImageViews;
+	VkSwapchainKHR m_SwapChain;
 
 	
 };

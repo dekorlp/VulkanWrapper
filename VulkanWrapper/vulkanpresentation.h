@@ -39,12 +39,12 @@ private:
 	//VkSurfaceKHR m_Surface;
 	CVulkanInstance* m_Instance;
 	//VkInstance m_Instance;
-	VkSwapchainKHR m_SwapChain;
+	//VkSwapchainKHR m_SwapChain;
 	//VkDevice m_LogicalDevice;
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
-	std::vector<VkImageView> swapChainImageViews;
+	//std::vector<VkImageView> swapChainImageViews;
 	SDL_Window* m_Window;
 	//VkRenderPass renderPass;
 };

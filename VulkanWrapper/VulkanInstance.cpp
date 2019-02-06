@@ -157,6 +157,26 @@ VkQueue CVulkanInstance::GetPresentQueue()
 	return this->presentQueue;
 }
 
+void CVulkanInstance::SetSwapchainImageViews(std::vector<VkImageView> swapChainImageViews)
+{
+	this->swapChainImageViews = swapChainImageViews;
+}
+
+std::vector<VkImageView> CVulkanInstance::GetSwapchainImageViews()
+{
+	return this->swapChainImageViews;
+}
+
+void CVulkanInstance::SetSwapchain(VkSwapchainKHR swapChain)
+{
+	this->m_SwapChain = swapChain;
+}
+
+VkSwapchainKHR CVulkanInstance::GetSwapchain()
+{
+	return this->m_SwapChain;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;
