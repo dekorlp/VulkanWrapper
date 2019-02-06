@@ -37,7 +37,7 @@ public:
 	void SetCurrentImage(uint32_t currentImage);
 
 private:
-	CVulkanPresentation m_Presentation;
+	//CVulkanPresentation m_Presentation;
 	//CVulkanPhysicalDevice m_PhysicalDevice;
 	//CVulkanLogicalDevice m_LogicalDevice;
 	CVulkanInstance* m_Instance;

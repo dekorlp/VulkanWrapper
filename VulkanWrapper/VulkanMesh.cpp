@@ -5,7 +5,7 @@ void CVulkanMesh::Init(CVulkanInstance* instance, CVulkanPresentation presentati
 	m_Instance = instance;
 	//m_PhysicalDevice = physicalDevice;
 	//m_LogicalDevice = logicalDevice;
-	m_Presentation = presentation;
+	//m_Presentation = presentation;
 	m_CommandPool = commandPool;
 }
 
@@ -25,26 +25,26 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 		VkCommandBufferInheritanceInfo inheritanceInfo;
 		inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 		inheritanceInfo.pNext = nullptr;
-		inheritanceInfo.renderPass = presentation.GetRenderPass();
+		inheritanceInfo.renderPass = m_Instance->GetRenderPass();
 		inheritanceInfo.subpass = 0;
 		inheritanceInfo.occlusionQueryEnable = VK_FALSE;
 		inheritanceInfo.framebuffer = VK_NULL_HANDLE;
 		inheritanceInfo.pipelineStatistics = 0;
 
 		VkViewport viewport;
-		viewport.height = static_cast<float>(m_Presentation.GetSwapChainExtend().width);
-		viewport.width = static_cast<float>(m_Presentation.GetSwapChainExtend().height);
+		viewport.height = static_cast<float>(m_Instance->GetSwapchainExtend().height);
+		viewport.width = static_cast<float>(m_Instance->GetSwapchainExtend().width);
 		viewport.minDepth = (float)0.0f;
 		viewport.maxDepth = (float)1.0f;
 		viewport.x = 0;
 		viewport.y = 0;
 
 		VkRect2D scissor;
-		scissor.extent.width = m_Presentation.GetSwapChainExtend().width;
-		scissor.extent.height = m_Presentation.GetSwapChainExtend().height;
+		scissor.extent.width = m_Instance->GetSwapchainExtend().width;
+		scissor.extent.height = m_Instance->GetSwapchainExtend().height;
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
-
+		
 
 		VkCommandBufferBeginInfo beginInfo = {};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -67,7 +67,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 
 		vkCmdBindIndexBuffer(m_SecondaryCommandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-		for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++)
+		for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++)
 		{
 			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
 		}
@@ -130,10 +130,10 @@ void CVulkanMesh::CreateUniformBuffer()
 {
 	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-	uniformBuffers.resize(m_Presentation.GetSwapChainImages().size());
-	uniformBuffersMemory.resize(m_Presentation.GetSwapChainImages().size());
+	uniformBuffers.resize(m_Instance->GetSwapchainImages().size());
+	uniformBuffersMemory.resize(m_Instance->GetSwapchainImages().size());
 
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
 		CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
 	}
 }
@@ -142,13 +142,13 @@ void CVulkanMesh::CreateDescriptorPool()
 {
 	VkDescriptorPoolSize poolSize = {};
 	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	poolSize.descriptorCount = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = 1;
 	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	poolInfo.maxSets = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 
 	if (vkCreateDescriptorPool(m_Instance->GetLogicalDevice(), &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
@@ -157,19 +157,19 @@ void CVulkanMesh::CreateDescriptorPool()
 
 void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
 {
-	std::vector<VkDescriptorSetLayout> layouts(m_Presentation.GetSwapChainImages().size(), pipeline.GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), pipeline.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 	allocInfo.pSetLayouts = layouts.data();
 
-	descriptorSets.resize(m_Presentation.GetSwapChainImages().size());
+	descriptorSets.resize(m_Instance->GetSwapchainImages().size());
 	if (vkAllocateDescriptorSets(m_Instance->GetLogicalDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
 		VkDescriptorBufferInfo bufferInfo = {};
 		bufferInfo.buffer = uniformBuffers[i];
 		bufferInfo.offset = 0;
@@ -209,7 +209,7 @@ void CVulkanMesh::DestroyIndexBuffer()
 
 void CVulkanMesh::DestroyUniformBuffers()
 {
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
 		vkDestroyBuffer(m_Instance->GetLogicalDevice(), uniformBuffers[i], nullptr);
 		vkFreeMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[i], nullptr);
 	}
@@ -243,7 +243,7 @@ void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 
 	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	ubo.proj = glm::perspective(glm::radians(45.0f), m_Presentation.GetSwapChainExtend().width / (float)m_Presentation.GetSwapChainExtend().height, 0.1f, 10.0f);
+	ubo.proj = glm::perspective(glm::radians(45.0f), m_Instance->GetSwapchainExtend().width / (float)m_Instance->GetSwapchainExtend().height, 0.1f, 10.0f);
 
 	ubo.proj[1][1] *= -1;
 
