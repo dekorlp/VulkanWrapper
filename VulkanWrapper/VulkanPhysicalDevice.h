@@ -12,7 +12,7 @@
 class CVulkanPhysicalDevice
 {
 public:
-	void SelectPhysicalDevice(CVulkanInstance instance, VkSurfaceKHR surface);
+	void SelectPhysicalDevice(CVulkanInstance* instance, VkSurfaceKHR surface);
 	VkPhysicalDevice GetPhysicalDevice();
 	bool CheckValidationLayerSupport();
 	const std::vector<const char*> GetValidationLayers();

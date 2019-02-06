@@ -1,10 +1,12 @@
 #include "VulkanLogicalDevice.h"
 #include <vulkan/vulkan.h>
 
-void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkanPhysicalDevice physicalDevice, CVulkanPresentation presentation)
+void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkanPresentation presentation)
 {
+
+	
 	//VulkanQueueFamily queueFamily;
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(physicalDevice.GetPhysicalDevice(),  presentation.GetSurface());
+	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(instance.GetPhysicalDevice(),  presentation.GetSurface());
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
@@ -50,7 +52,7 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkan
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(physicalDevice.GetPhysicalDevice(), &createInfo, nullptr, &m_Device) != VK_SUCCESS) {
+	if (vkCreateDevice(instance.GetPhysicalDevice(), &createInfo, nullptr, &m_Device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
 

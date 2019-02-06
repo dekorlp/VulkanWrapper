@@ -93,8 +93,8 @@ private:
 		vulkanDebug.SetupVulkanDebug(vulkanInstance);
 		vulkanDebug.SetupDebugCallback(DebugCallback);
 		vulkanPresentation.CreateSurface(vulkanInstance, info.info.win.window, window);
-		vulkanPhysicalDevice.SelectPhysicalDevice(vulkanInstance, vulkanPresentation.GetSurface());
-		vulkanLogicalDevice.CreateLogicalDevice(vulkanInstance, vulkanPhysicalDevice, vulkanPresentation);
+		vulkanPhysicalDevice.SelectPhysicalDevice(&vulkanInstance, vulkanPresentation.GetSurface());
+		vulkanLogicalDevice.CreateLogicalDevice(vulkanInstance, vulkanPresentation);
 		vulkanPresentation.CreateSwapChain(vulkanPhysicalDevice.GetPhysicalDevice(), vulkanLogicalDevice.getDevice(), width, height);
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();

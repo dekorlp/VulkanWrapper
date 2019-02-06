@@ -9,7 +9,7 @@
 class CVulkanLogicalDevice
 {
 public:
-	void CreateLogicalDevice(CVulkanInstance instance, CVulkanPhysicalDevice physicalDevice, CVulkanPresentation presentation);
+	void CreateLogicalDevice(CVulkanInstance instance, CVulkanPresentation presentation);
 	void DestroyLogicalDevice();
 	VkDevice getDevice();
 	VkQueue GetGraphicsQueue();

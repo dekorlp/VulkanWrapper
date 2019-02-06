@@ -1,7 +1,8 @@
 #include "VulkanPhysicalDevice.h"
 
-void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance instance, VkSurfaceKHR surface)
+void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance* instance, VkSurfaceKHR surface)
 {
+
 	//m_VulkanInstance = instance;
 	m_Surface = surface;
 	//m_VulkanPresentation = presentation;
@@ -9,7 +10,7 @@ void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance instance, VkSur
 	physicalDevice = VK_NULL_HANDLE;
 
 	uint32_t deviceCount = 0;
-	vkEnumeratePhysicalDevices(instance.GetInstance(), &deviceCount, nullptr);
+	vkEnumeratePhysicalDevices(instance->GetInstance(), &deviceCount, nullptr);
 
 	if (deviceCount == 0)
 	{
@@ -19,7 +20,7 @@ void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance instance, VkSur
 	
 
 	std::vector<VkPhysicalDevice> devices(deviceCount);
-	vkEnumeratePhysicalDevices(instance.GetInstance(), &deviceCount, devices.data());
+	vkEnumeratePhysicalDevices(instance->GetInstance(), &deviceCount, devices.data());
 
 	//for (const auto& device : devices) {
 	//	if (IsDeviceSuitable(device)) {
@@ -42,7 +43,7 @@ void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance instance, VkSur
 	// Check if the best candidate is suitable at all
 	if (candidates.rbegin()->first > 0) {
 		physicalDevice = candidates.rbegin()->second;
-		instance.SetPhysicalDevice(physicalDevice);
+		instance->SetPhysicalDevice(candidates.rbegin()->second);
 	}
 	else {
 		throw std::runtime_error("failed to find a suitable GPU!");
