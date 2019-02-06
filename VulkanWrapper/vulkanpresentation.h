@@ -22,7 +22,7 @@ public:
 	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, unsigned int width, unsigned int height);
-	void CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, unsigned int width, unsigned int height);
+	void CreateSwapChain(unsigned int width, unsigned int height);
 	void DestroySwapChain();
 	void CreateImageViews();
 	void DestroyImageViews();
@@ -40,7 +40,7 @@ private:
 	CVulkanInstance* m_Instance;
 	//VkInstance m_Instance;
 	VkSwapchainKHR m_SwapChain;
-	VkDevice m_LogicalDevice;
+	//VkDevice m_LogicalDevice;
 	std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;

@@ -9,13 +9,14 @@
 class CVulkanLogicalDevice
 {
 public:
-	void CreateLogicalDevice(CVulkanInstance instance, CVulkanPresentation presentation);
+	void CreateLogicalDevice(CVulkanInstance* instance);
 	void DestroyLogicalDevice();
 	VkDevice getDevice();
 	VkQueue GetGraphicsQueue();
 	VkQueue GetPresentQueue();
 private:
-	VkDevice m_Device; // LogicalDevice
+	//VkDevice m_Device; // LogicalDevice
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
+	CVulkanInstance *m_Instance;
 };

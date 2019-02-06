@@ -68,11 +68,11 @@ VkExtent2D CVulkanPresentation::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR&
 	}
 }
 
-void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDevice logicalDevice, unsigned int width, unsigned int height)
+void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int height)
 {
 	
-	m_LogicalDevice = logicalDevice;
-	SSwapChainSupportDetails swapChainSupport = CVulkanQueueFamily::QuerySwapChainSupport(physicalDevice, m_Instance->GetSurface());
+	//m_LogicalDevice = logicalDevice;
+	SSwapChainSupportDetails swapChainSupport = CVulkanQueueFamily::QuerySwapChainSupport(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
@@ -96,7 +96,7 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(physicalDevice, m_Instance->GetSurface());
+	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
 
 	if (indices.graphicsFamily != indices.presentFamily) {
@@ -118,13 +118,13 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	if (vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS) {
+	if (vkCreateSwapchainKHR(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &m_SwapChain) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create swap chain!");
 	}
 
-	vkGetSwapchainImagesKHR(logicalDevice, m_SwapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, nullptr);
 	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(logicalDevice, m_SwapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_SwapChain, &imageCount, swapChainImages.data());
 
 	swapChainImageFormat = surfaceFormat.format;
 	swapChainExtent = extent;
@@ -132,7 +132,7 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 
 void CVulkanPresentation::DestroySwapChain()
 {
-	vkDestroySwapchainKHR(m_LogicalDevice, m_SwapChain, nullptr);
+	vkDestroySwapchainKHR(m_Instance->GetLogicalDevice(), m_SwapChain, nullptr);
 }
 
 void CVulkanPresentation::CreateImageViews()
@@ -157,7 +157,7 @@ void CVulkanPresentation::CreateImageViews()
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(m_LogicalDevice, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+		if (vkCreateImageView(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
 		}
 	}
@@ -210,7 +210,7 @@ void CVulkanPresentation::CreateRenderPass() {
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
 	VkRenderPass renderPass;
-	if (vkCreateRenderPass(m_LogicalDevice, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(m_Instance->GetLogicalDevice(), &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 	m_Instance->SetRenderPass(renderPass);
@@ -218,7 +218,7 @@ void CVulkanPresentation::CreateRenderPass() {
 
 void CVulkanPresentation::DestroyRenderPass()
 {
-	vkDestroyRenderPass(m_LogicalDevice, m_Instance->GetRenderPass(), nullptr);
+	vkDestroyRenderPass(m_Instance->GetLogicalDevice(), m_Instance->GetRenderPass(), nullptr);
 }
 
 VkRenderPass CVulkanPresentation::GetRenderPass()
@@ -230,7 +230,7 @@ VkRenderPass CVulkanPresentation::GetRenderPass()
 void CVulkanPresentation::DestroyImageViews()
 {
 	for (auto imageView : swapChainImageViews) {
-		vkDestroyImageView(m_LogicalDevice, imageView, nullptr);
+		vkDestroyImageView(m_Instance->GetLogicalDevice(), imageView, nullptr);
 	}
 }
 

@@ -94,8 +94,8 @@ private:
 		vulkanDebug.SetupDebugCallback(DebugCallback);
 		vulkanPresentation.CreateSurface(&vulkanInstance, info.info.win.window, window);
 		vulkanPhysicalDevice.SelectPhysicalDevice(&vulkanInstance);
-		vulkanLogicalDevice.CreateLogicalDevice(vulkanInstance, vulkanPresentation);
-		vulkanPresentation.CreateSwapChain(vulkanPhysicalDevice.GetPhysicalDevice(), vulkanLogicalDevice.getDevice(), width, height);
+		vulkanLogicalDevice.CreateLogicalDevice(&vulkanInstance);
+		vulkanPresentation.CreateSwapChain(width, height);
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 
@@ -151,7 +151,7 @@ private:
 		int height;
 		SDL_Vulkan_GetDrawableSize(window, &width, &height);
 
-		vulkanPresentation.CreateSwapChain(vulkanPhysicalDevice.GetPhysicalDevice(), vulkanLogicalDevice.getDevice(), width, height);
+		vulkanPresentation.CreateSwapChain(width, height);
 		vulkanPresentation.CreateImageViews();
 		vulkanPresentation.CreateRenderPass();
 

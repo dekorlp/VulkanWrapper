@@ -101,6 +101,16 @@ VkPhysicalDevice CVulkanInstance::GetPhysicalDevice()
 	return this->m_PhysicalDevice;
 }
 
+void CVulkanInstance::SetLogicalDevice(VkDevice logicalDevice)
+{
+	this->m_LogicalDevice = logicalDevice;
+}
+
+VkDevice CVulkanInstance::GetLogicalDevice()
+{
+	return this->m_LogicalDevice;
+}
+
 void CVulkanInstance::SetSurface(VkSurfaceKHR surface)
 {
 	this->m_Surface = surface;

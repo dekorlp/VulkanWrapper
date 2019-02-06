@@ -34,6 +34,9 @@ public:
 	void SetPhysicalDevice(VkPhysicalDevice physicalDevice);
 	VkPhysicalDevice GetPhysicalDevice();
 
+	void SetLogicalDevice(VkDevice logicalDevice);
+	VkDevice GetLogicalDevice();
+
 	void SetSurface(VkSurfaceKHR surface);
 	VkSurfaceKHR GetSurface();
 
@@ -59,6 +62,7 @@ private:
 	VkSurfaceKHR m_Surface;
 	VkExtent2D m_SwapChainExtent;
 	VkRenderPass m_renderPass;
+	VkDevice m_LogicalDevice;
 
 
 	

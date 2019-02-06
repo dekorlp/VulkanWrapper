@@ -1,12 +1,12 @@
 #include "VulkanLogicalDevice.h"
 #include <vulkan/vulkan.h>
 
-void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkanPresentation presentation)
+void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 {
 
-	
+	m_Instance = instance;
 	//VulkanQueueFamily queueFamily;
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(instance.GetPhysicalDevice(),  presentation.GetSurface());
+	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(instance->GetPhysicalDevice(),  instance->GetSurface());
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };
@@ -41,8 +41,8 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkan
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(vulkanExtensions.logicalDeviceExtensions.size());
 	createInfo.ppEnabledExtensionNames = vulkanExtensions.logicalDeviceExtensions.data();
 
-	const std::vector<const char*> validationLayersVector = instance.GetValidationLayers();
-	if (instance.IsvalidationLayerEnabled()) {
+	const std::vector<const char*> validationLayersVector = instance->GetValidationLayers();
+	if (instance->IsvalidationLayerEnabled()) {
 		
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayersVector.size());
 
@@ -52,23 +52,26 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance instance, CVulkan
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(instance.GetPhysicalDevice(), &createInfo, nullptr, &m_Device) != VK_SUCCESS) {
+	VkDevice device;
+	if (vkCreateDevice(instance->GetPhysicalDevice(), &createInfo, nullptr, &device) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create logical device!");
 	}
 
-	vkGetDeviceQueue(m_Device, indices.graphicsFamily, 0, &graphicsQueue);
-	vkGetDeviceQueue(m_Device, indices.presentFamily, 0, &presentQueue);
+	vkGetDeviceQueue(device, indices.graphicsFamily, 0, &graphicsQueue);
+	vkGetDeviceQueue(device, indices.presentFamily, 0, &presentQueue);
+
+	m_Instance->SetLogicalDevice(device);
 
 }
 
 void CVulkanLogicalDevice::DestroyLogicalDevice()
 {
-	vkDestroyDevice(m_Device, nullptr);
+	vkDestroyDevice(m_Instance->GetLogicalDevice(), nullptr);
 }
 
 VkDevice CVulkanLogicalDevice::getDevice()
 {
-	return m_Device;
+	return m_Instance->GetLogicalDevice();
 }
 
 VkQueue CVulkanLogicalDevice::GetGraphicsQueue()
