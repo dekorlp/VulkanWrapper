@@ -17,7 +17,7 @@
 class CVulkanMesh
 {
 public:
-	void Init(CVulkanInstance* instance, CVulkanPresentation presentation, VkCommandPool commandPool);
+	void Init(CVulkanInstance* instance, VkCommandPool commandPool);
 	void CreateVertexBuffer(std::vector<CCustomVertex> vertices);
 	void DestroyVertexBuffer();
 	void createIndexBuffer(const std::vector<uint16_t> indices);
@@ -25,7 +25,7 @@ public:
 	void CreateDescriptorPool();
 	void CreateDescriptorSet(CVulkanPipeline pipeline);
 	void DestroyIndexBuffer();
-	void CreateSecondaryCommandBuffers(CVulkanPresentation presentation, CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer);
+	void CreateSecondaryCommandBuffers(CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer);
 	VkCommandBuffer* const GetCommandBuffer();
 	void DestroySecondaryCommandBuffer();
 	void DestroyUniformBuffers();
@@ -37,7 +37,7 @@ public:
 	void SetCurrentImage(uint32_t currentImage);
 
 private:
-	CVulkanPresentation m_Presentation;
+	//CVulkanPresentation m_Presentation;
 	//CVulkanPhysicalDevice m_PhysicalDevice;
 	//CVulkanLogicalDevice m_LogicalDevice;
 	CVulkanInstance* m_Instance;
