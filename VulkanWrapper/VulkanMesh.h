@@ -34,7 +34,13 @@ public:
 	void UpdateUniformBuffers(uint32_t currentImage);
 
 	bool operator==(const CVulkanMesh& rhs) const;
+
+	bool operator==(const CVulkanMesh* rhs) const;
+
+
 	void SetCurrentImage(uint32_t currentImage);
+	void SetVectorIndex(unsigned int vectorIndex);
+	unsigned int GetVectorIndex() const;
 
 private:
 	//CVulkanPresentation m_Presentation;
@@ -51,6 +57,7 @@ private:
 
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;
+	unsigned int m_VectorIndex;
 
 	VkDescriptorPool descriptorPool;
 	std::vector<VkDescriptorSet> descriptorSets;

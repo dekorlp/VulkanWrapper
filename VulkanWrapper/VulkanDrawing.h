@@ -22,8 +22,8 @@ public:
 	void DestroyCommandBuffers();
 	void CreateSemaphores();
 	void DestroySemaphores();
-	void RegisterMesh(CVulkanMesh commandBuffer);
-	void UnregisterMesh(CVulkanMesh commandBuffer);
+	void RegisterMesh(CVulkanMesh* commandBuffer);
+	void UnregisterMesh(CVulkanMesh* commandBuffer);
 	void Draw();
 	void CreateSyncObjects();
 	std::vector<VkFramebuffer> getFramebuffers();

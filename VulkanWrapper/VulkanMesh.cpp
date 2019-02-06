@@ -259,10 +259,32 @@ void CVulkanMesh::SetCurrentImage(uint32_t currentImage)
 	this->m_CurrentImage = currentImage;
 }
 
+void CVulkanMesh::SetVectorIndex(unsigned int vectorIndex)
+{
+	this->m_VectorIndex = vectorIndex;
+}
+
+unsigned int CVulkanMesh::GetVectorIndex() const
+{
+	return this->m_VectorIndex;
+}
+
 bool CVulkanMesh::operator==(const CVulkanMesh& rhs) const
 {
 	const CVulkanMesh* ptr = dynamic_cast<const CVulkanMesh*>(&rhs);
-	if (this != ptr)
+	if (this->m_VectorIndex != ptr->m_VectorIndex)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+bool CVulkanMesh::operator==(const CVulkanMesh* rhs) const
+{
+	if (this->m_VectorIndex != rhs->m_VectorIndex)
 	{
 		return false;
 	}

@@ -128,7 +128,7 @@ private:
 		plane.CreateSecondaryCommandBuffers(vulkanPipeline, vulkanDrawing.getFramebuffers());
 
 		
-		vulkanDrawing.RegisterMesh(plane);
+		vulkanDrawing.RegisterMesh(&plane);
 
 		vulkanDrawing.CreateCommandBuffers();
 		vulkanDrawing.CreateSyncObjects();	
@@ -159,10 +159,8 @@ private:
 
 		plane.CreateSecondaryCommandBuffers(vulkanPipeline, vulkanDrawing.getFramebuffers());
 		
-		vulkanDrawing.RegisterMesh(plane);
+		vulkanDrawing.RegisterMesh(&plane);
 		vulkanDrawing.CreateCommandBuffers();
-		
-	
 
 	}
 

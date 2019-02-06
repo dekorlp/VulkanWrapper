@@ -142,15 +142,23 @@ void CVulkanDrawing::DestroySemaphores()
 	}
 }
 
-void CVulkanDrawing::RegisterMesh(CVulkanMesh mesh)
+void CVulkanDrawing::RegisterMesh(CVulkanMesh* mesh)
 {
-	m_VulkanMesh.push_back(mesh);
+	unsigned int vectorIndex = m_VulkanMesh.size();
+	mesh->SetVectorIndex(vectorIndex);
+	m_VulkanMesh.push_back(*mesh);
 }
 
-void CVulkanDrawing::UnregisterMesh(CVulkanMesh mesh)
+void CVulkanDrawing::UnregisterMesh(CVulkanMesh* mesh)
 {
-	m_VulkanMesh.erase(std::find(m_VulkanMesh.begin(), m_VulkanMesh.end(), mesh));
 	DestroyCommandBuffers();
+	
+	std::vector<CVulkanMesh>::iterator position = std::find(m_VulkanMesh.begin(), m_VulkanMesh.end(), mesh);
+	if (position != m_VulkanMesh.end())
+	{
+		m_VulkanMesh.erase(std::find(m_VulkanMesh.begin(), m_VulkanMesh.end(), mesh));
+	}
+
 	CreateCommandBuffers();
 }
 
