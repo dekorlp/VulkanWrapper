@@ -210,7 +210,7 @@ private:
 		}
 
 		// wait until operations are finished
-		vkDeviceWaitIdle(vulkanLogicalDevice.getDevice());
+		vkDeviceWaitIdle(vulkanInstance.GetLogicalDevice());
 	}
 
 	void cleanup() {
