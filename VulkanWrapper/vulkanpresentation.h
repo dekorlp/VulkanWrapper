@@ -16,7 +16,7 @@
 class CVulkanPresentation
 {
 public:
-	void CreateSurface(CVulkanInstance instance, HWND hwnd, SDL_Window* window);
+	void CreateSurface(CVulkanInstance* instance, HWND hwnd, SDL_Window* window);
 	void DestroySurface();
 	VkSurfaceKHR GetSurface();
 	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
@@ -36,8 +36,9 @@ public:
 	VkRenderPass GetRenderPass();
 
 private:
-	VkSurfaceKHR m_Surface;
-	VkInstance m_Instance;
+	//VkSurfaceKHR m_Surface;
+	CVulkanInstance* m_Instance;
+	//VkInstance m_Instance;
 	VkSwapchainKHR m_SwapChain;
 	VkDevice m_LogicalDevice;
 	std::vector<VkImage> swapChainImages;
@@ -45,5 +46,5 @@ private:
 	VkExtent2D swapChainExtent;
 	std::vector<VkImageView> swapChainImageViews;
 	SDL_Window* m_Window;
-	VkRenderPass renderPass;
+	//VkRenderPass renderPass;
 };

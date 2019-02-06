@@ -1,24 +1,27 @@
 #include "vulkanpresentation.h"
 
 
-void CVulkanPresentation::CreateSurface(CVulkanInstance instance, HWND hwnd, SDL_Window* window)
+void CVulkanPresentation::CreateSurface(CVulkanInstance* instance, HWND hwnd, SDL_Window* window)
 {
-	m_Instance = instance.GetInstance();
+	m_Instance = instance;
 	m_Window = window;
-	if (!SDL_Vulkan_CreateSurface(window, instance.GetInstance(), &m_Surface) != VK_SUCCESS)
+
+	VkSurfaceKHR surface;
+	if (!SDL_Vulkan_CreateSurface(window, instance->GetInstance(), &surface) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create window surface!");
 	}
+	instance->SetSurface(surface);
 }
 
 void CVulkanPresentation::DestroySurface()
 {
-	vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+	vkDestroySurfaceKHR(m_Instance->GetInstance(), m_Instance->GetSurface() , nullptr);
 }
 
 VkSurfaceKHR CVulkanPresentation::GetSurface()
 {
-	return m_Surface;
+	return m_Instance->GetSurface();
 }
 
 VkSurfaceFormatKHR CVulkanPresentation::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
@@ -69,11 +72,13 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 {
 	
 	m_LogicalDevice = logicalDevice;
-	SSwapChainSupportDetails swapChainSupport = CVulkanQueueFamily::QuerySwapChainSupport(physicalDevice, m_Surface);
+	SSwapChainSupportDetails swapChainSupport = CVulkanQueueFamily::QuerySwapChainSupport(physicalDevice, m_Instance->GetSurface());
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
 	VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities, width, height);
+
+	m_Instance->SetSwapchainExtend(extent);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 	if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
@@ -82,7 +87,7 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = m_Surface;
+	createInfo.surface = m_Instance->GetSurface();
 
 	createInfo.minImageCount = imageCount;
 	createInfo.imageFormat = surfaceFormat.format;
@@ -91,7 +96,7 @@ void CVulkanPresentation::CreateSwapChain(VkPhysicalDevice physicalDevice, VkDev
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(physicalDevice, m_Surface);
+	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(physicalDevice, m_Instance->GetSurface());
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
 
 	if (indices.graphicsFamily != indices.presentFamily) {
@@ -204,20 +209,21 @@ void CVulkanPresentation::CreateRenderPass() {
 	renderPassInfo.pSubpasses = &subpass;
 	renderPassInfo.dependencyCount = 1;
 	renderPassInfo.pDependencies = &dependency;
-
+	VkRenderPass renderPass;
 	if (vkCreateRenderPass(m_LogicalDevice, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
+	m_Instance->SetRenderPass(renderPass);
 }
 
 void CVulkanPresentation::DestroyRenderPass()
 {
-	vkDestroyRenderPass(m_LogicalDevice, renderPass, nullptr);
+	vkDestroyRenderPass(m_LogicalDevice, m_Instance->GetRenderPass(), nullptr);
 }
 
 VkRenderPass CVulkanPresentation::GetRenderPass()
 {
-	return renderPass;
+	return m_Instance->GetRenderPass();
 }
 
 

@@ -9,7 +9,7 @@
 class CVulkanPipeline
 {
 public:
-	void InitVulkanPipeline(CVulkanLogicalDevice device, CVulkanPresentation presentation);
+	void InitVulkanPipeline(CVulkanInstance* instance, CVulkanLogicalDevice device);
 	void CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex);
 	VkShaderModule CreateShaderModule(const std::vector<char>& code);
 	void CreateDescriptorSetLayout();
@@ -23,6 +23,7 @@ private:
 	CVulkanLogicalDevice m_LogicalDevice;
 	VkDescriptorSetLayout descriptorSetLayout;
 	VkPipelineLayout pipelineLayout;
-	CVulkanPresentation m_Presentation;
 	VkPipeline graphicsPipeline;
+
+	CVulkanInstance* m_Instance;
 };

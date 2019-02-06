@@ -34,6 +34,17 @@ public:
 	void SetPhysicalDevice(VkPhysicalDevice physicalDevice);
 	VkPhysicalDevice GetPhysicalDevice();
 
+	void SetSurface(VkSurfaceKHR surface);
+	VkSurfaceKHR GetSurface();
+
+	void SetSwapchainExtend(VkExtent2D swapchainExtend);
+	VkExtent2D GetSwapchainExtend();
+
+	void SetRenderPass(VkRenderPass renderPass);
+	VkRenderPass GetRenderPass();
+
+	CVulkanInstance& operator=(CVulkanInstance const* rhs);
+
 
 private: 
 	VkInstance instance;
@@ -45,6 +56,10 @@ private:
 
 	///////////////////////////////////////////
 	VkPhysicalDevice m_PhysicalDevice;
+	VkSurfaceKHR m_Surface;
+	VkExtent2D m_SwapChainExtent;
+	VkRenderPass m_renderPass;
+
 
 	
 };

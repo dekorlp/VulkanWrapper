@@ -1,9 +1,10 @@
 #include "VulkanPipeline.h"
 
-void CVulkanPipeline::InitVulkanPipeline(CVulkanLogicalDevice device, CVulkanPresentation presentation)
+void CVulkanPipeline::InitVulkanPipeline(CVulkanInstance* instance, CVulkanLogicalDevice device)
 {
 	m_LogicalDevice = device;
-	m_Presentation = presentation;
+	m_Instance = instance;
+	//m_Presentation = instance.get
 }
 
 void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex)
@@ -46,14 +47,14 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)m_Presentation.GetSwapChainExtend().width;
-	viewport.height = (float)m_Presentation.GetSwapChainExtend().height;
+	viewport.width = (float)m_Instance->GetSwapchainExtend().width;  
+	viewport.height = (float)m_Instance->GetSwapchainExtend().height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor = {};
 	scissor.offset = { 0, 0 };
-	scissor.extent = m_Presentation.GetSwapChainExtend();
+	scissor.extent = m_Instance->GetSwapchainExtend();
 
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -142,9 +143,9 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState; // Optional
 	pipelineInfo.layout = pipelineLayout;
-	pipelineInfo.renderPass = m_Presentation.GetRenderPass();
+	pipelineInfo.renderPass = m_Instance->GetRenderPass();
 	pipelineInfo.subpass = 0;
-
+	
 	if (vkCreateGraphicsPipelines(m_LogicalDevice.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}

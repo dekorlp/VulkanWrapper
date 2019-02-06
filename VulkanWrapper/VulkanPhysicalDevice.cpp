@@ -1,10 +1,10 @@
 #include "VulkanPhysicalDevice.h"
 
-void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance* instance, VkSurfaceKHR surface)
+void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance* instance)
 {
 
 	//m_VulkanInstance = instance;
-	m_Surface = surface;
+	//m_Surface = surface;
 	//m_VulkanPresentation = presentation;
 
 	physicalDevice = VK_NULL_HANDLE;
@@ -36,7 +36,7 @@ void CVulkanPhysicalDevice::SelectPhysicalDevice(CVulkanInstance* instance, VkSu
 	std::multimap<int, VkPhysicalDevice> candidates;
 
 	for (const auto& device : devices) {
-		int score = RateDeviceSuitabilty(device);
+		int score = RateDeviceSuitabilty(device, instance->GetSurface());
 		candidates.insert(std::make_pair(score, device));
 	}
 
@@ -100,7 +100,7 @@ std::vector<const char*> CVulkanPhysicalDevice::GetRequiredExtensions(uint32_t s
 }
 
 // TODO: Implement DeviceRating for choosing the best device
-int CVulkanPhysicalDevice::RateDeviceSuitabilty(VkPhysicalDevice device)
+int CVulkanPhysicalDevice::RateDeviceSuitabilty(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
 	VkPhysicalDeviceProperties deviceProperties;
 	VkPhysicalDeviceFeatures deviceFeatures;
@@ -123,7 +123,7 @@ int CVulkanPhysicalDevice::RateDeviceSuitabilty(VkPhysicalDevice device)
 	}
 
 	// check if the device contains a graphics queue
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(device, m_Surface);
+	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(device, surface);
 	if (indices.isComplete() == 0)
 	{
 		score = 0;

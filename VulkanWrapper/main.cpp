@@ -92,8 +92,8 @@ private:
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		vulkanDebug.SetupVulkanDebug(vulkanInstance);
 		vulkanDebug.SetupDebugCallback(DebugCallback);
-		vulkanPresentation.CreateSurface(vulkanInstance, info.info.win.window, window);
-		vulkanPhysicalDevice.SelectPhysicalDevice(&vulkanInstance, vulkanPresentation.GetSurface());
+		vulkanPresentation.CreateSurface(&vulkanInstance, info.info.win.window, window);
+		vulkanPhysicalDevice.SelectPhysicalDevice(&vulkanInstance);
 		vulkanLogicalDevice.CreateLogicalDevice(vulkanInstance, vulkanPresentation);
 		vulkanPresentation.CreateSwapChain(vulkanPhysicalDevice.GetPhysicalDevice(), vulkanLogicalDevice.getDevice(), width, height);
 		vulkanPresentation.CreateImageViews();
@@ -105,7 +105,7 @@ private:
 
 		CCustomVertex vertex;
 
-		vulkanPipeline.InitVulkanPipeline(vulkanLogicalDevice, vulkanPresentation);
+		vulkanPipeline.InitVulkanPipeline(&vulkanInstance, vulkanLogicalDevice);
 		vulkanPipeline.CreateDescriptorSetLayout();
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 

@@ -100,3 +100,38 @@ VkPhysicalDevice CVulkanInstance::GetPhysicalDevice()
 {
 	return this->m_PhysicalDevice;
 }
+
+void CVulkanInstance::SetSurface(VkSurfaceKHR surface)
+{
+	this->m_Surface = surface;
+}
+
+VkSurfaceKHR CVulkanInstance::GetSurface()
+{
+	return this->m_Surface;
+}
+
+void CVulkanInstance::SetSwapchainExtend(VkExtent2D swapchainExtend)
+{
+	this->m_SwapChainExtent = swapchainExtend;
+}
+
+VkExtent2D CVulkanInstance::GetSwapchainExtend()
+{
+	return this->m_SwapChainExtent;
+}
+
+void CVulkanInstance::SetRenderPass(VkRenderPass renderPass)
+{
+	this->m_renderPass = renderPass;
+}
+
+VkRenderPass CVulkanInstance::GetRenderPass()
+{
+	return this->m_renderPass;
+}
+
+CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
+{
+	return *this;
+}
