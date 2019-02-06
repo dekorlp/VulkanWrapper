@@ -41,7 +41,7 @@ private:
 	//VkInstance m_Instance;
 	
 	//VkDevice m_LogicalDevice;
-	std::vector<VkImage> swapChainImages;
+	//std::vector<VkImage> swapChainImages;
 	VkFormat swapChainImageFormat;
 	//VkExtent2D swapChainExtent;
 	

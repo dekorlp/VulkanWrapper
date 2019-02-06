@@ -1,14 +1,15 @@
 #include "VulkanMesh.h"
 
-void CVulkanMesh::Init(CVulkanPhysicalDevice physicalDevice, CVulkanLogicalDevice logicalDevice, CVulkanPresentation presentation, VkCommandPool commandPool)
+void CVulkanMesh::Init(CVulkanInstance* instance, VkCommandPool commandPool)
 {
-	m_PhysicalDevice = physicalDevice;
-	m_LogicalDevice = logicalDevice;
-	m_Presentation = presentation;
+	m_Instance = instance;
+	//m_PhysicalDevice = physicalDevice;
+	//m_LogicalDevice = logicalDevice;
+	//m_Presentation = presentation;
 	m_CommandPool = commandPool;
 }
 
-void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation, CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer)
+void CVulkanMesh::CreateSecondaryCommandBuffers( CVulkanPipeline pipeline, std::vector<VkFramebuffer> framebuffer)
 {
 
 		VkCommandBufferAllocateInfo allocInfo = {};
@@ -17,30 +18,30 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 		allocInfo.commandBufferCount = 1;
 
-		if (vkAllocateCommandBuffers(m_LogicalDevice.getDevice(), &allocInfo, &m_SecondaryCommandBuffer) != VK_SUCCESS) {
+		if (vkAllocateCommandBuffers(m_Instance->GetLogicalDevice(), &allocInfo, &m_SecondaryCommandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate command buffers!");
 		}
 
 		VkCommandBufferInheritanceInfo inheritanceInfo;
 		inheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 		inheritanceInfo.pNext = nullptr;
-		inheritanceInfo.renderPass = presentation.GetRenderPass();
+		inheritanceInfo.renderPass = m_Instance->GetRenderPass();
 		inheritanceInfo.subpass = 0;
 		inheritanceInfo.occlusionQueryEnable = VK_FALSE;
 		inheritanceInfo.framebuffer = VK_NULL_HANDLE;
 		inheritanceInfo.pipelineStatistics = 0;
 
 		VkViewport viewport;
-		viewport.height = static_cast<float>(m_Presentation.GetSwapChainExtend().width);
-		viewport.width = static_cast<float>(m_Presentation.GetSwapChainExtend().height);
+		viewport.height = static_cast<float>(m_Instance->GetSwapchainExtend().width);
+		viewport.width = static_cast<float>(m_Instance->GetSwapchainExtend().height);
 		viewport.minDepth = (float)0.0f;
 		viewport.maxDepth = (float)1.0f;
 		viewport.x = 0;
 		viewport.y = 0;
 
 		VkRect2D scissor;
-		scissor.extent.width = m_Presentation.GetSwapChainExtend().width;
-		scissor.extent.height = m_Presentation.GetSwapChainExtend().height;
+		scissor.extent.width = m_Instance->GetSwapchainExtend().width;
+		scissor.extent.height = m_Instance->GetSwapchainExtend().height;
 		scissor.offset.x = 0;
 		scissor.offset.y = 0;
 
@@ -66,7 +67,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPresentation presentation
 
 		vkCmdBindIndexBuffer(m_SecondaryCommandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-		for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++)
+		for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++)
 		{
 			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
 		}
@@ -89,18 +90,18 @@ void CVulkanMesh::CreateVertexBuffer(const std::vector<CCustomVertex> vertices)
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 
-	CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
-	vkMapMemory(m_LogicalDevice.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	vkMapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, m_Vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(m_LogicalDevice.getDevice(), stagingBufferMemory);
+	vkUnmapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory);
 
-	CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-	CVulkanQueueFamily::copyBuffer(m_LogicalDevice.getDevice(), m_CommandPool, m_LogicalDevice.GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
+	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_CommandPool, m_Instance->GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
 
-	vkDestroyBuffer(m_LogicalDevice.getDevice(), stagingBuffer, nullptr);
-	vkFreeMemory(m_LogicalDevice.getDevice(), stagingBufferMemory, nullptr);
+	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
 void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
@@ -110,30 +111,30 @@ void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
-	vkMapMemory(m_LogicalDevice.getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	vkMapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, m_Indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(m_LogicalDevice.getDevice(), stagingBufferMemory);
+	vkUnmapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory);
 
-	CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
-	CVulkanQueueFamily::copyBuffer(m_LogicalDevice.getDevice(), m_CommandPool, m_LogicalDevice.GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
+	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_CommandPool, m_Instance->GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
 
-	vkDestroyBuffer(m_LogicalDevice.getDevice(), stagingBuffer, nullptr);
-	vkFreeMemory(m_LogicalDevice.getDevice(), stagingBufferMemory, nullptr);
+	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
 }
 
 void CVulkanMesh::CreateUniformBuffer()
 {
 	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
-	uniformBuffers.resize(m_Presentation.GetSwapChainImages().size());
-	uniformBuffersMemory.resize(m_Presentation.GetSwapChainImages().size());
+	uniformBuffers.resize(m_Instance->GetSwapchainImages().size());
+	uniformBuffersMemory.resize(m_Instance->GetSwapchainImages().size());
 
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
-		CVulkanQueueFamily::createBuffer(m_PhysicalDevice.GetPhysicalDevice(), m_LogicalDevice.getDevice(), bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
+		CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
 	}
 }
 
@@ -141,34 +142,34 @@ void CVulkanMesh::CreateDescriptorPool()
 {
 	VkDescriptorPoolSize poolSize = {};
 	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	poolSize.descriptorCount = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.poolSizeCount = 1;
 	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	poolInfo.maxSets = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 
-	if (vkCreateDescriptorPool(m_LogicalDevice.getDevice(), &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
+	if (vkCreateDescriptorPool(m_Instance->GetLogicalDevice(), &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create descriptor pool!");
 	}
 }
 
 void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
 {
-	std::vector<VkDescriptorSetLayout> layouts(m_Presentation.GetSwapChainImages().size(), pipeline.GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), pipeline.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
-	allocInfo.descriptorSetCount = static_cast<uint32_t>(m_Presentation.GetSwapChainImages().size());
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 	allocInfo.pSetLayouts = layouts.data();
 
-	descriptorSets.resize(m_Presentation.GetSwapChainImages().size());
-	if (vkAllocateDescriptorSets(m_LogicalDevice.getDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+	descriptorSets.resize(m_Instance->GetSwapchainImages().size());
+	if (vkAllocateDescriptorSets(m_Instance->GetLogicalDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
 		VkDescriptorBufferInfo bufferInfo = {};
 		bufferInfo.buffer = uniformBuffers[i];
 		bufferInfo.offset = 0;
@@ -184,33 +185,33 @@ void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline)
 		descriptorWrite.pBufferInfo = &bufferInfo;
 		descriptorWrite.pImageInfo = nullptr; // Optional
 		descriptorWrite.pTexelBufferView = nullptr; // Optional
-		vkUpdateDescriptorSets(m_LogicalDevice.getDevice(), 1, &descriptorWrite, 0, nullptr);
+		vkUpdateDescriptorSets(m_Instance->GetLogicalDevice(), 1, &descriptorWrite, 0, nullptr);
 	}
 
 }
 
 void CVulkanMesh::DestroyDescriptorPool()
 {
-	vkDestroyDescriptorPool(m_LogicalDevice.getDevice(), descriptorPool, nullptr);
+	vkDestroyDescriptorPool(m_Instance->GetLogicalDevice(), descriptorPool, nullptr);
 }
 
 void CVulkanMesh::DestroyVertexBuffer()
 {
-	vkDestroyBuffer(m_LogicalDevice.getDevice(), vertexBuffer, nullptr);
-	vkFreeMemory(m_LogicalDevice.getDevice(), vertexBufferMemory, nullptr);
+	vkDestroyBuffer(m_Instance->GetLogicalDevice(), vertexBuffer, nullptr);
+	vkFreeMemory(m_Instance->GetLogicalDevice(), vertexBufferMemory, nullptr);
 }
 
 void CVulkanMesh::DestroyIndexBuffer()
 {
-	vkDestroyBuffer(m_LogicalDevice.getDevice(), indexBuffer, nullptr);
-	vkFreeMemory(m_LogicalDevice.getDevice(), indexBufferMemory, nullptr);
+	vkDestroyBuffer(m_Instance->GetLogicalDevice(), indexBuffer, nullptr);
+	vkFreeMemory(m_Instance->GetLogicalDevice(), indexBufferMemory, nullptr);
 }
 
 void CVulkanMesh::DestroyUniformBuffers()
 {
-	for (size_t i = 0; i < m_Presentation.GetSwapChainImages().size(); i++) {
-		vkDestroyBuffer(m_LogicalDevice.getDevice(), uniformBuffers[i], nullptr);
-		vkFreeMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[i], nullptr);
+	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
+		vkDestroyBuffer(m_Instance->GetLogicalDevice(), uniformBuffers[i], nullptr);
+		vkFreeMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[i], nullptr);
 	}
 }
 
@@ -221,7 +222,7 @@ VkCommandBuffer* const CVulkanMesh::GetCommandBuffer()
 
 void CVulkanMesh::DestroySecondaryCommandBuffer()
 {
-	vkFreeCommandBuffers(m_LogicalDevice.getDevice(), m_CommandPool, static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
+	vkFreeCommandBuffers(m_Instance->GetLogicalDevice(), m_CommandPool, static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
 }
 
 std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()
@@ -242,15 +243,15 @@ void CVulkanMesh::UpdateUniformBuffers(uint32_t currentImage)
 
 	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	ubo.proj = glm::perspective(glm::radians(45.0f), m_Presentation.GetSwapChainExtend().width / (float)m_Presentation.GetSwapChainExtend().height, 0.1f, 10.0f);
+	ubo.proj = glm::perspective(glm::radians(45.0f),m_Instance->GetSwapchainExtend().width / (float)m_Instance->GetSwapchainExtend().height, 0.1f, 10.0f);
 
 	ubo.proj[1][1] *= -1;
 
 	void* data;
 	
-	vkMapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
+	vkMapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
 	memcpy(data, &ubo, sizeof(ubo));
-	vkUnmapMemory(m_LogicalDevice.getDevice(), uniformBuffersMemory[currentImage]);
+	vkUnmapMemory(m_Instance->GetLogicalDevice(), uniformBuffersMemory[currentImage]);
 }
 
 void CVulkanMesh::SetCurrentImage(uint32_t currentImage)

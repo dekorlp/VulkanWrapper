@@ -177,6 +177,16 @@ VkSwapchainKHR CVulkanInstance::GetSwapchain()
 	return this->m_SwapChain;
 }
 
+void CVulkanInstance::SetSwapchainImages(std::vector<VkImage> images)
+{
+	this->swapChainImages = images;
+}
+
+std::vector<VkImage> CVulkanInstance::GetSwapchainImages()
+{
+	return this->swapChainImages;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;
