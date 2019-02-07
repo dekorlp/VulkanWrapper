@@ -107,7 +107,7 @@ private:
 		CCustomVertex vertex;
 
 		vulkanPipeline.InitVulkanPipeline(&vulkanInstance);
-		vulkanPipeline.CreateDescriptorSetLayout(1);
+		vulkanPipeline.CreateDescriptorSetLayout(0);
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 
 		plane.Init(&vulkanInstance, vulkanDrawing.GetCommandPool());
@@ -125,7 +125,7 @@ private:
 
 		plane.CreateUniformBuffer(sizeof(UniformBufferObject));
 		plane.CreateDescriptorPool();
-		plane.CreateDescriptorSet(vulkanPipeline, sizeof(UniformBufferObject), 1);
+		plane.CreateDescriptorSet(vulkanPipeline, sizeof(UniformBufferObject), 0);
 		plane.CreateSecondaryCommandBuffers(vulkanPipeline);
 
 		
