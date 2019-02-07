@@ -169,10 +169,10 @@ VkShaderModule CVulkanPipeline::CreateShaderModule(const std::vector<char>& code
 	return shaderModule;
 }
 
-void CVulkanPipeline::CreateDescriptorSetLayout()
+void CVulkanPipeline::CreateDescriptorSetLayout(unsigned int unfirmBufferBinding)
 {
 	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-	uboLayoutBinding.binding = 0;
+	uboLayoutBinding.binding = unfirmBufferBinding;
 	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 	uboLayoutBinding.descriptorCount = 1;
 	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;

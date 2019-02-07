@@ -12,7 +12,7 @@ public:
 	void InitVulkanPipeline(CVulkanInstance* instance);
 	void CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex);
 	VkShaderModule CreateShaderModule(const std::vector<char>& code);
-	void CreateDescriptorSetLayout();
+	void CreateDescriptorSetLayout(unsigned int unfirmBufferBinding);
 	void DestroyPipeline();
 	void DestroyDescriptorSetLayout();
 	VkPipeline GetGraphicsPipeline();
