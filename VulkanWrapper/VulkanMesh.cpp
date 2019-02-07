@@ -155,7 +155,7 @@ void CVulkanMesh::CreateDescriptorPool()
 	}
 }
 
-void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize)
+void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize, unsigned int uniformBufferBinding)
 {
 	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), pipeline.GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo = {};
@@ -178,7 +178,7 @@ void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBu
 		VkWriteDescriptorSet descriptorWrite = {};
 		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrite.dstSet = descriptorSets[i];
-		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstBinding = uniformBufferBinding;
 		descriptorWrite.dstArrayElement = 0;
 		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		descriptorWrite.descriptorCount = 1;

@@ -22,7 +22,7 @@ public:
 	void createIndexBuffer(const std::vector<uint16_t> indices);
 	void CreateUniformBuffer(size_t uniformBufferSize);
 	void CreateDescriptorPool();
-	void CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize);
+	void CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize, unsigned int uniformBufferBinding);
 	void DestroyIndexBuffer();
 	void CreateSecondaryCommandBuffers(CVulkanPipeline pipeline);
 	VkCommandBuffer* const GetCommandBuffer();

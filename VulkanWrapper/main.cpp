@@ -125,7 +125,7 @@ private:
 
 		plane.CreateUniformBuffer(sizeof(UniformBufferObject));
 		plane.CreateDescriptorPool();
-		plane.CreateDescriptorSet(vulkanPipeline, sizeof(UniformBufferObject));
+		plane.CreateDescriptorSet(vulkanPipeline, sizeof(UniformBufferObject), 1);
 		plane.CreateSecondaryCommandBuffers(vulkanPipeline);
 
 		
