@@ -2,9 +2,6 @@
 
 void CVulkanDrawing::Init(CVulkanInstance* instance)
 {
-	//m_LogicalDevice = logicalDevice;
-	//m_Presentation = presentation;
-	//m_PhysicalDevice = physicalDevice;
 	m_Instance = instance;
 	m_VulkanMesh.clear();
 }

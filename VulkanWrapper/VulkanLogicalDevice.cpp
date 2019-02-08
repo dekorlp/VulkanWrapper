@@ -5,7 +5,6 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 {
 
 	m_Instance = instance;
-	//VulkanQueueFamily queueFamily;
 	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(instance->GetPhysicalDevice(),  instance->GetSurface());
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -32,10 +31,6 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
 	createInfo.enabledExtensionCount = 0;
-
-	//const std::vector<const char*> validationExtensionVector = instance.getExtensionsStr();
-	//createInfo.enabledExtensionCount = static_cast<uint32_t>(validationExtensionVector.size());
-	//createInfo.ppEnabledExtensionNames = validationExtensionVector.data();
 
 	SVulkanExtensions vulkanExtensions;
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(vulkanExtensions.logicalDeviceExtensions.size());

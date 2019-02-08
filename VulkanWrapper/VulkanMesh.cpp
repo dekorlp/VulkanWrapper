@@ -72,14 +72,12 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
 			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
 		}
 
-		//vkCmdDraw(commandBuffers[i], static_cast<uint32_t>(vertices.size()), 1, 0, 0);
 		vkCmdDrawIndexed(m_SecondaryCommandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
 
 		if (vkEndCommandBuffer(m_SecondaryCommandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
 		}
 
-		//m_SecondaryCommandBuffer.push_back(secondaryCommandBuffer);
 }
 
 void CVulkanMesh::CreateVertexBuffer(const std::vector<CCustomVertex> vertices)
