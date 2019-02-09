@@ -1,6 +1,6 @@
 #include "VulkanMesh.h"
 
-void CVulkanMesh::Init(CVulkanInstance* instance, VkCommandPool commandPool)
+void CVulkanMesh::Init(CVulkanInstance* instance)
 {
 	m_Instance = instance;
 	//m_PhysicalDevice = physicalDevice;

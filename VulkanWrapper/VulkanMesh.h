@@ -16,7 +16,7 @@
 class CVulkanMesh
 {
 public:
-	void Init(CVulkanInstance* instance, VkCommandPool commandPool);
+	void Init(CVulkanInstance* instance);
 	void CreateVertexBuffer(std::vector<CCustomVertex> vertices);
 	void DestroyVertexBuffer();
 	void createIndexBuffer(const std::vector<uint16_t> indices);

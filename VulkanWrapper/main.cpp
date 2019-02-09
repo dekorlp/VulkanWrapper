@@ -110,7 +110,7 @@ private:
 		vulkanPipeline.CreateDescriptorSetLayout(0);
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), vertex);
 
-		plane.Init(&vulkanInstance, vulkanDrawing.GetCommandPool());
+		plane.Init(&vulkanInstance);
 		plane.CreateVertexBuffer(
 		{
 		{ { -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
