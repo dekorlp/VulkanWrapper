@@ -57,6 +57,9 @@
     <ClCompile Include="CVulkanVertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanUniform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanInstance.h">
@@ -96,6 +99,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CustomVertex.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUniform.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

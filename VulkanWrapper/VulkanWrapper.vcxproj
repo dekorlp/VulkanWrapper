@@ -157,6 +157,7 @@
     <ClCompile Include="VulkanPipeline.cpp" />
     <ClCompile Include="VulkanPresentation.cpp" />
     <ClCompile Include="VulkanQueueFamily.cpp" />
+    <ClCompile Include="VulkanUniform.cpp" />
     <ClCompile Include="VulkanValidationLayers.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="VulkanPipeline.h" />
     <ClInclude Include="vulkanpresentation.h" />
     <ClInclude Include="vulkanqueuefamilie.h" />
+    <ClInclude Include="VulkanUniform.h" />
     <ClInclude Include="VulkanValidationLayers.h" />
     <ClInclude Include="VulkanVertex.h" />
   </ItemGroup>

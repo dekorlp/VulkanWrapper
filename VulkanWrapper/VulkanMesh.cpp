@@ -1,14 +1,15 @@
 #include "VulkanMesh.h"
 
-void CVulkanMesh::Init(CVulkanInstance* instance)
+void CVulkanMesh::Init(CVulkanInstance* instance, CVulkanPipeline* pipeline)
 {
 	m_Instance = instance;
+	m_Pipeline = pipeline;
 	//m_PhysicalDevice = physicalDevice;
 	//m_LogicalDevice = logicalDevice;
 	//m_Presentation = presentation;
 }
 
-void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
+void CVulkanMesh::CreateSecondaryCommandBuffers()
 {
 
 		VkCommandBufferAllocateInfo allocInfo = {};
@@ -54,7 +55,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
 
-		vkCmdBindPipeline(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetGraphicsPipeline());
+		vkCmdBindPipeline(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetGraphicsPipeline());
 
 		VkBuffer vertexBuffers[] = { vertexBuffer };
 		VkDeviceSize offsets[] = { 0 };
@@ -68,7 +69,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
 
 		for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++)
 		{
-			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
+			vkCmdBindDescriptorSets(m_SecondaryCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline->GetPipelineLayout(), 0, 1, &descriptorSets[i], 0, nullptr);
 		}
 
 		vkCmdDrawIndexed(m_SecondaryCommandBuffer, static_cast<uint32_t>(m_Indices.size()), 1, 0, 0, 0);
@@ -152,9 +153,9 @@ void CVulkanMesh::CreateDescriptorPool()
 	}
 }
 
-void CVulkanMesh::CreateDescriptorSet(CVulkanPipeline pipeline, size_t uniformBufferSize, unsigned int uniformBufferBinding)
+void CVulkanMesh::CreateDescriptorSet(size_t uniformBufferSize, unsigned int uniformBufferBinding)
 {
-	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), pipeline.GetDescriptorSetLayout());
+	std::vector<VkDescriptorSetLayout> layouts(m_Instance->GetSwapchainImages().size(), m_Pipeline->GetDescriptorSetLayout());
 	VkDescriptorSetAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = descriptorPool;
