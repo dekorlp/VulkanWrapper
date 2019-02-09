@@ -47,7 +47,6 @@ private:
 	//CVulkanLogicalDevice m_LogicalDevice;
 	CVulkanInstance* m_Instance;
 
-
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 
@@ -66,7 +65,7 @@ private:
 
 	VkCommandBuffer m_SecondaryCommandBuffer;
 
-	VkCommandPool m_CommandPool;
+	//VkCommandPool m_CommandPool;
 
 	uint32_t m_CurrentImage = 0;
 };

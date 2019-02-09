@@ -6,7 +6,6 @@ void CVulkanMesh::Init(CVulkanInstance* instance, VkCommandPool commandPool)
 	//m_PhysicalDevice = physicalDevice;
 	//m_LogicalDevice = logicalDevice;
 	//m_Presentation = presentation;
-	m_CommandPool = commandPool;
 }
 
 void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
@@ -14,7 +13,7 @@ void CVulkanMesh::CreateSecondaryCommandBuffers(CVulkanPipeline pipeline)
 
 		VkCommandBufferAllocateInfo allocInfo = {};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = m_CommandPool;
+		allocInfo.commandPool = m_Instance->GetCommandPool();
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 		allocInfo.commandBufferCount = 1;
 
@@ -96,7 +95,7 @@ void CVulkanMesh::CreateVertexBuffer(const std::vector<CCustomVertex> vertices)
 	vkUnmapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory);
 
 	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_CommandPool, m_Instance->GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
+	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
 
 	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
@@ -118,7 +117,7 @@ void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
 
 	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
-	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_CommandPool, m_Instance->GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
+	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
 
 	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
@@ -220,7 +219,7 @@ VkCommandBuffer* const CVulkanMesh::GetCommandBuffer()
 
 void CVulkanMesh::DestroySecondaryCommandBuffer()
 {
-	vkFreeCommandBuffers(m_Instance->GetLogicalDevice(), m_CommandPool, static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
+	vkFreeCommandBuffers(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), static_cast<uint32_t>(1), &m_SecondaryCommandBuffer);
 }
 
 std::vector<VkDeviceMemory> CVulkanMesh::GetUniformBuffersMemory()

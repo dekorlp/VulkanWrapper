@@ -64,6 +64,9 @@ public:
 	void SetSelectedImageToDraw(uint32_t selectedImageToDraw);
 	uint32_t GetSelectedImageToDraw();
 
+	void SetCommandPool(VkCommandPool commandPool);
+	VkCommandPool GetCommandPool();
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -83,6 +86,7 @@ private:
 	VkDevice m_LogicalDevice;
 	VkQueue graphicsQueue;
 	VkQueue presentQueue;
+	VkCommandPool m_CommandPool;
 
 	std::vector<VkImageView> swapChainImageViews;
 	VkSwapchainKHR m_SwapChain;

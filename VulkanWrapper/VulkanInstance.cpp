@@ -197,6 +197,16 @@ uint32_t CVulkanInstance::GetSelectedImageToDraw()
 	return this->m_SelectedImageToDraw;
 }
 
+void CVulkanInstance::SetCommandPool(VkCommandPool commandPool)
+{
+	this->m_CommandPool = commandPool;
+}
+
+VkCommandPool CVulkanInstance::GetCommandPool()
+{
+	return m_CommandPool;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;

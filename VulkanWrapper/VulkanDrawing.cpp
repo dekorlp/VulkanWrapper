@@ -48,6 +48,7 @@ void CVulkanDrawing::CreateCommandPool()
 	if (vkCreateCommandPool(m_Instance->GetLogicalDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
+	m_Instance->SetCommandPool(commandPool);
 }
 
 void CVulkanDrawing::DestroyCommandPool()
