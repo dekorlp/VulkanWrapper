@@ -22,6 +22,7 @@ public:
 	std::vector<std::vector<CVulkanUniform>> GetDescriptorUniforms();
 	void AddUniform(CVulkanUniform uniform);
 	void AddShader(std::vector<char> shaderProgram, VkShaderStageFlagBits shaderStage);
+	void AddShader(const char* shaderProgram, unsigned int shaderProgramSize, VkShaderStageFlagBits shaderStage);
 
 private:
 	VkPipelineLayout pipelineLayout;

@@ -166,12 +166,12 @@ void CVulkanQueueFamily::copyBuffer(VkDevice device, VkCommandPool commandPool, 
 	vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
 
-VkShaderModule CVulkanQueueFamily::CreateShaderModule(CVulkanInstance* instance, const std::vector<char>& code)
+VkShaderModule CVulkanQueueFamily::CreateShaderModule(CVulkanInstance* instance, const char* data, unsigned int size)
 {
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+	createInfo.codeSize = size;
+	createInfo.pCode = reinterpret_cast<const uint32_t*>(data);
 
 	VkShaderModule shaderModule;
 	if (vkCreateShaderModule(instance->GetLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
