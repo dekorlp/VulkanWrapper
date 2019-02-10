@@ -107,8 +107,8 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 1; // Optional
-	pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout; // Optional
+	pipelineLayoutInfo.setLayoutCount = m_DescriptorSetLayouts.size(); // Optional
+	pipelineLayoutInfo.pSetLayouts = m_DescriptorSetLayouts.data(); // Optional
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -169,22 +169,55 @@ VkShaderModule CVulkanPipeline::CreateShaderModule(const std::vector<char>& code
 	return shaderModule;
 }
 
-void CVulkanPipeline::CreateDescriptorSetLayout(unsigned int unfirmBufferBinding)
+void CVulkanPipeline::CreateDescriptorSetLayouts()
 {
-	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-	uboLayoutBinding.binding = unfirmBufferBinding;
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uboLayoutBinding.descriptorCount = 1;
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+	std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
+	m_DescriptorSetLayouts.resize(m_UniformSets.size());
 
-	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = 1;
-	layoutInfo.pBindings = &uboLayoutBinding;
 
-	if (vkCreateDescriptorSetLayout(m_Instance->GetLogicalDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor set layout!");
+	for (unsigned int i = 0; i < m_UniformSets.size(); i++)
+	{
+		for (unsigned int j = 0; j < m_UniformSets.at(i).size(); j++)
+		{
+			VkDescriptorSetLayoutBinding uboLayoutBinding = {};
+			uboLayoutBinding.binding = m_UniformSets.at(i).at(j).GetUniformBinding();
+			uboLayoutBinding.descriptorType = m_UniformSets.at(i).at(j).GetDescriptorType();
+			uboLayoutBinding.descriptorCount = 1;
+			uboLayoutBinding.stageFlags = m_UniformSets.at(i).at(j).GetShaderStageFlag();
+			uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+			layoutBindings.push_back(uboLayoutBinding);
+		}
+
+		VkDescriptorSetLayoutCreateInfo layoutInfo = {};
+		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+		layoutInfo.bindingCount = layoutBindings.size();
+		layoutInfo.pBindings = layoutBindings.data();
+
+		if (vkCreateDescriptorSetLayout(m_Instance->GetLogicalDevice(), &layoutInfo, nullptr, &m_DescriptorSetLayouts[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create descriptor set layout!");
+		}
+		layoutBindings.clear();
+	}
+}
+
+std::vector<std::vector<CVulkanUniform>> CVulkanPipeline::GetDescriptorUniforms()
+{
+	return m_UniformSets;
+}
+
+void CVulkanPipeline::AddUniform(CVulkanUniform uniform)
+{
+	if (uniform.GetUniformSet() > m_UniformSets.size())
+	{
+		throw std::runtime_error("failed to add Uniform! Uniform sets must be crated in an ascending order starting with 0!");
+	}
+	else if (uniform.GetUniformSet() == m_UniformSets.size())
+	{
+		m_UniformSets.push_back(std::vector<CVulkanUniform>(1, uniform));
+	}
+	else // uniform.GetUniformSet() < m_Uniform.size()
+	{
+		m_UniformSets.at(uniform.GetUniformSet()).push_back(uniform);
 	}
 }
 
@@ -197,7 +230,10 @@ void CVulkanPipeline::DestroyPipeline()
 
 void CVulkanPipeline::DestroyDescriptorSetLayout()
 {
-	vkDestroyDescriptorSetLayout(m_Instance->GetLogicalDevice(), descriptorSetLayout, nullptr);
+	for (unsigned int i = 0; i < m_DescriptorSetLayouts.size(); i++)
+	{
+		vkDestroyDescriptorSetLayout(m_Instance->GetLogicalDevice(), m_DescriptorSetLayouts[i], nullptr);
+	}
 }
 
 VkPipeline CVulkanPipeline::GetGraphicsPipeline()
@@ -210,7 +246,7 @@ VkPipelineLayout CVulkanPipeline::GetPipelineLayout()
 	return pipelineLayout;
 }
 
-VkDescriptorSetLayout CVulkanPipeline::GetDescriptorSetLayout()
+std::vector<VkDescriptorSetLayout> CVulkanPipeline::GetDescriptorSetLayouts()
 {
-	return descriptorSetLayout;
+	return m_DescriptorSetLayouts;
 }

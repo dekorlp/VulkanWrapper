@@ -8,14 +8,21 @@ void CVulkanUniform::CreateUniform(unsigned int uniformSet, unsigned int uniform
 	this->mShaderStage = shaderStage;
 }
 
-void CVulkanUniform::SetDescriptorSetLayout(VkDescriptorSetLayout *descriptorSetLayout)
+void CVulkanUniform::SetUniformBuffers(std::vector<VkBuffer> uniformBuffer, std::vector<VkDeviceMemory> uniformBuffersMemory)
 {
-	this->m_DescriptorSetLayout = descriptorSetLayout;
+	this->m_UniformBuffers = uniformBuffer;
+	this->m_UniformBuffersMemory = uniformBuffersMemory;
 }
 
-VkDescriptorSetLayout* CVulkanUniform::GetDescriptorSetLayout()
+
+std::vector<VkBuffer> CVulkanUniform::GetUniformBuffers()
 {
-	return this->m_DescriptorSetLayout;
+	return this->m_UniformBuffers;
+}
+
+std::vector<VkDeviceMemory> CVulkanUniform::GetUniformBuffersMemory()
+{
+	return this->m_UniformBuffersMemory;
 }
 
 unsigned int CVulkanUniform::GetUniformSet()

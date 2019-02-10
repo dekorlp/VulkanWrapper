@@ -12,13 +12,17 @@ public:
 	unsigned int GetUniformBinding();
 	VkDescriptorType GetDescriptorType();
 	VkShaderStageFlags GetShaderStageFlag();
-	void SetDescriptorSetLayout(VkDescriptorSetLayout *descriptorSetLayout);
-	VkDescriptorSetLayout* GetDescriptorSetLayout();
+
+	void SetUniformBuffers(std::vector<VkBuffer> uniformBuffer, std::vector<VkDeviceMemory> uniformBuffersMemory);
+	std::vector<VkBuffer> GetUniformBuffers();
+	std::vector<VkDeviceMemory> GetUniformBuffersMemory();
 
 private:
 	unsigned int mUniformSet;
 	unsigned int mUniformBinding;
 	VkDescriptorType mDescriptorType; // exmpl: VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
 	VkShaderStageFlags mShaderStage; // exmpl: VK_SHADER_STAGE_VERTEX_BIT;
-	VkDescriptorSetLayout *m_DescriptorSetLayout;
+
+	std::vector<VkBuffer> m_UniformBuffers;
+	std::vector<VkDeviceMemory> m_UniformBuffersMemory;
 };

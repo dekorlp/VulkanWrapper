@@ -14,6 +14,7 @@
 #include "VulkanMesh.h"
 #include "CustomVertex.h"
 #include "SUniformBufferObject.h"
+#include "VulkanUniform.h"
 #include <vector>
 
 
@@ -105,7 +106,13 @@ private:
 		vulkanDrawing.CreateCommandPool();
 
 		vulkanPipeline.InitVulkanPipeline(&vulkanInstance);
-		vulkanPipeline.CreateDescriptorSetLayout(0);
+
+
+		
+		uniform1.CreateUniform(0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
+		vulkanPipeline.AddUniform(uniform1);
+		vulkanPipeline.CreateDescriptorSetLayouts();
+
 		vulkanPipeline.CreateGraphicsPipeline(readFile("shader/Descriptor/vert.spv"), readFile("shader/Descriptor/frag.spv"), CCustomVertex());
 
 		plane.Init(&vulkanInstance, &vulkanPipeline);
@@ -121,9 +128,12 @@ private:
 			0, 1, 2, 2, 3, 0,
 		});
 
-		plane.CreateUniformBuffer(sizeof(UniformBufferObject));
+		
+
+		plane.CreateUniformBuffer(&uniform1, sizeof(UniformBufferObject));
 		plane.CreateDescriptorPool();
-		plane.CreateDescriptorSet(sizeof(UniformBufferObject), 0);
+		plane.CreateDescriptorSet();
+		plane.CreateDescriptorWrite(&uniform1, sizeof(UniformBufferObject));
 		plane.CreateSecondaryCommandBuffers();
 
 		
@@ -216,7 +226,7 @@ private:
 			ubo.proj[1][1] *= -1;
 
 			vulkanDrawing.DrawFrame();
-			plane.UpdateUniformBuffer(&ubo, sizeof(ubo));
+			plane.UpdateUniformBuffer(uniform1, &ubo, sizeof(ubo));
 		}
 
 		// wait until operations are finished
@@ -231,7 +241,7 @@ private:
 		vulkanDrawing.DestroyCommandBuffers();
 		vulkanDrawing.DestroyCommandPool();
 		plane.DestroyDescriptorPool();
-		plane.DestroyUniformBuffers();
+		plane.DestroyUniformBuffers(&uniform1);
 		plane.DestroyIndexBuffer();
 		plane.DestroyVertexBuffer();
 		vulkanDrawing.DestroyFrameBuffers();
@@ -259,6 +269,7 @@ private:
 	CVulkanPipeline vulkanPipeline;
 	CVulkanDrawing vulkanDrawing;
 	CVulkanMesh plane;
+	CVulkanUniform uniform1;
 
 	VkInstance instance;
 	int  width;
