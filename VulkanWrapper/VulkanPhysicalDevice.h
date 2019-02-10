@@ -6,8 +6,7 @@
 #include <vulkan/vulkan.h>
 #include "VulkanInstance.h"
 #include "VulkanPresentation.h"
-#include "VulkanQueueFamilie.h"
-#include "vulkanqueuefamilie.h"
+#include "VulkanUtils.h"
 
 class CVulkanPhysicalDevice
 {

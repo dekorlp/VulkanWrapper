@@ -7,7 +7,7 @@
 #include "VulkanPhysicalDevice.h"
 #include "VulkanPipeline.h"
 #include "vulkanpresentation.h"
-#include "vulkanqueuefamilie.h"
+#include "VulkanUtils.h"
 #include "VulkanMesh.h"
 
 class CVulkanDrawing

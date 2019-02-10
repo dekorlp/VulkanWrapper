@@ -6,7 +6,7 @@
 
 #include "VulkanLogicalDevice.h"
 #include "VulkanUniform.h"
-#include "CVulkanShader.h"
+#include "VulkanShader.h"
 
 class CVulkanPipeline
 {

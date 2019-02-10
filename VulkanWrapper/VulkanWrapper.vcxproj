@@ -146,7 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CVulkanShader.cpp" />
+    <ClCompile Include="VulkanShader.cpp" />
     <ClCompile Include="VulkanVertexDescription.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
@@ -157,13 +157,13 @@
     <ClCompile Include="VulkanPhysicalDevice.cpp" />
     <ClCompile Include="VulkanPipeline.cpp" />
     <ClCompile Include="VulkanPresentation.cpp" />
-    <ClCompile Include="VulkanQueueFamily.cpp" />
+    <ClCompile Include="VulkanUtils.cpp" />
     <ClCompile Include="VulkanUniform.cpp" />
     <ClCompile Include="VulkanValidationLayers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomVertex.h" />
-    <ClInclude Include="CVulkanShader.h" />
+    <ClInclude Include="VulkanShader.h" />
     <ClInclude Include="SUniformBufferObject.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanDrawing.h" />
@@ -173,7 +173,7 @@
     <ClInclude Include="VulkanPhysicalDevice.h" />
     <ClInclude Include="VulkanPipeline.h" />
     <ClInclude Include="vulkanpresentation.h" />
-    <ClInclude Include="vulkanqueuefamilie.h" />
+    <ClInclude Include="VulkanUtils.h" />
     <ClInclude Include="VulkanUniform.h" />
     <ClInclude Include="VulkanValidationLayers.h" />
     <ClInclude Include="VulkanVertexDescription.h" />

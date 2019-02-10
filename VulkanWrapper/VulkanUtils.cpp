@@ -1,6 +1,6 @@
-#include "vulkanqueuefamilie.h"
+#include "VulkanUtils.h"
 
-bool CVulkanQueueFamily::IsDeviceSuitable(CVulkanInstance vulkanInstance, VkPhysicalDevice device, VkSurfaceKHR surface)
+bool CVulkanUtils::IsDeviceSuitable(CVulkanInstance vulkanInstance, VkPhysicalDevice device, VkSurfaceKHR surface)
 {
 	SQueueFamilyIndices indices = findQueueFamilies(device, surface);
 
@@ -16,7 +16,7 @@ bool CVulkanQueueFamily::IsDeviceSuitable(CVulkanInstance vulkanInstance, VkPhys
 	return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
-bool CVulkanQueueFamily::checkDeviceExtensionSupport(CVulkanInstance vulkanInstance, VkPhysicalDevice device) {
+bool CVulkanUtils::checkDeviceExtensionSupport(CVulkanInstance vulkanInstance, VkPhysicalDevice device) {
 	uint32_t extensionCount;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
@@ -36,7 +36,7 @@ bool CVulkanQueueFamily::checkDeviceExtensionSupport(CVulkanInstance vulkanInsta
 	return requiredExtensions.empty();
 }
 
-SQueueFamilyIndices CVulkanQueueFamily::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
+SQueueFamilyIndices CVulkanUtils::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
 	SQueueFamilyIndices indices;
 
@@ -69,7 +69,7 @@ SQueueFamilyIndices CVulkanQueueFamily::findQueueFamilies(VkPhysicalDevice devic
 	return indices;
 }
 
-SSwapChainSupportDetails CVulkanQueueFamily::QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
+SSwapChainSupportDetails CVulkanUtils::QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
 	SSwapChainSupportDetails details;
 
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -93,7 +93,7 @@ SSwapChainSupportDetails CVulkanQueueFamily::QuerySwapChainSupport(VkPhysicalDev
 	return details;
 }
 
-uint32_t CVulkanQueueFamily::findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+uint32_t CVulkanUtils::findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
 {
 	VkPhysicalDeviceMemoryProperties memProperties;
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -107,7 +107,7 @@ uint32_t CVulkanQueueFamily::findMemoryType(VkPhysicalDevice physicalDevice, uin
 	throw std::runtime_error("failed to find suitable memory type!");
 }
 
-void CVulkanQueueFamily::createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+void CVulkanUtils::createBuffer(VkPhysicalDevice physicalDevice, VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
 	VkBufferCreateInfo bufferInfo = {};
 	bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 	bufferInfo.size = size;
@@ -133,7 +133,7 @@ void CVulkanQueueFamily::createBuffer(VkPhysicalDevice physicalDevice, VkDevice 
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-void CVulkanQueueFamily::copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+void CVulkanUtils::copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -166,7 +166,7 @@ void CVulkanQueueFamily::copyBuffer(VkDevice device, VkCommandPool commandPool, 
 	vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
 
-VkShaderModule CVulkanQueueFamily::CreateShaderModule(CVulkanInstance* instance, const char* data, unsigned int size)
+VkShaderModule CVulkanUtils::CreateShaderModule(CVulkanInstance* instance, const char* data, unsigned int size)
 {
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

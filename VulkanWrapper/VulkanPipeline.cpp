@@ -191,7 +191,7 @@ void CVulkanPipeline::AddUniform(CVulkanUniform uniform)
 void CVulkanPipeline::AddShader(std::vector<char> shaderProgram, VkShaderStageFlagBits shaderStage)
 {
 	
-	VkShaderModule shaderModule = CVulkanQueueFamily::CreateShaderModule(m_Instance, shaderProgram.data(), shaderProgram.size());
+	VkShaderModule shaderModule = CVulkanUtils::CreateShaderModule(m_Instance, shaderProgram.data(), shaderProgram.size());
 
 	VkPipelineShaderStageCreateInfo shaderStageInfo = {};
 	shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -210,7 +210,7 @@ void CVulkanPipeline::AddShader(std::vector<char> shaderProgram, VkShaderStageFl
 
 void CVulkanPipeline::AddShader(const char* shaderProgram, unsigned int shaderProgramSize, VkShaderStageFlagBits shaderStage)
 {
-	VkShaderModule shaderModule = CVulkanQueueFamily::CreateShaderModule(m_Instance, shaderProgram, shaderProgramSize);
+	VkShaderModule shaderModule = CVulkanUtils::CreateShaderModule(m_Instance, shaderProgram, shaderProgramSize);
 
 	VkPipelineShaderStageCreateInfo shaderStageInfo = {};
 	shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

@@ -5,7 +5,7 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 {
 
 	m_Instance = instance;
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(instance->GetPhysicalDevice(),  instance->GetSurface());
+	SQueueFamilyIndices indices = CVulkanUtils::findQueueFamilies(instance->GetPhysicalDevice(),  instance->GetSurface());
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily, indices.presentFamily };

@@ -21,7 +21,7 @@ struct SQueueFamilyIndices {
 	}
 };
 
-class CVulkanQueueFamily
+class CVulkanUtils
 {
 public:
 	static bool IsDeviceSuitable(CVulkanInstance vulkanInstance, VkPhysicalDevice device, VkSurfaceKHR surface);

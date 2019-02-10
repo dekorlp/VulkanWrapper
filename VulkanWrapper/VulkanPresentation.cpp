@@ -72,7 +72,7 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 {
 	
 	//m_LogicalDevice = logicalDevice;
-	SSwapChainSupportDetails swapChainSupport = CVulkanQueueFamily::QuerySwapChainSupport(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
+	SSwapChainSupportDetails swapChainSupport = CVulkanUtils::QuerySwapChainSupport(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
@@ -96,7 +96,7 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
+	SQueueFamilyIndices indices = CVulkanUtils::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily, indices.presentFamily };
 
 	if (indices.graphicsFamily != indices.presentFamily) {

@@ -3,7 +3,7 @@
 #include <set>
 #include "VulkanInstance.h"
 #include "VulkanPhysicalDevice.h"
-#include "VulkanQueueFamilie.h"
+#include "VulkanUtils.h"
 #include "vulkanpresentation.h"
 
 class CVulkanLogicalDevice

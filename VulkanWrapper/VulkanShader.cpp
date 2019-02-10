@@ -1,4 +1,4 @@
-#include "CVulkanShader.h"
+#include "VulkanShader.h"
 
 
 void CVulkanShader::SetShaderModule(VkShaderModule shaderModule)

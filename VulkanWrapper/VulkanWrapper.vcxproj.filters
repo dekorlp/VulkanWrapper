@@ -42,9 +42,6 @@
     <ClCompile Include="VulkanPresentation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanQueueFamily.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,10 +54,13 @@
     <ClCompile Include="VulkanUniform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CVulkanShader.cpp">
+    <ClCompile Include="VulkanVertexDescription.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanVertexDescription.cpp">
+    <ClCompile Include="VulkanShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,9 +83,6 @@
     <ClInclude Include="vulkanpresentation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="vulkanqueuefamilie.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanPipeline.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -104,10 +101,13 @@
     <ClInclude Include="VulkanUniform.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CVulkanShader.h">
+    <ClInclude Include="VulkanVertexDescription.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanVertexDescription.h">
+    <ClInclude Include="VulkanShader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanUtils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

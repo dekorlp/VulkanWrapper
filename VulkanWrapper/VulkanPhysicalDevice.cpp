@@ -123,7 +123,7 @@ int CVulkanPhysicalDevice::RateDeviceSuitabilty(VkPhysicalDevice device, VkSurfa
 	}
 
 	// check if the device contains a graphics queue
-	SQueueFamilyIndices indices = CVulkanQueueFamily::findQueueFamilies(device, surface);
+	SQueueFamilyIndices indices = CVulkanUtils::findQueueFamilies(device, surface);
 	if (indices.isComplete() == 0)
 	{
 		score = 0;

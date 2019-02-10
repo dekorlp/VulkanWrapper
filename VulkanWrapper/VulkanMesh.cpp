@@ -87,15 +87,15 @@ void CVulkanMesh::CreateVertexBuffer(const std::vector<CCustomVertex> vertices)
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 
-	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	CVulkanUtils::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
 	vkMapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, m_Vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory);
 
-	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
+	CVulkanUtils::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+	CVulkanUtils::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, vertexBuffer, bufferSize);
 
 	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
@@ -108,16 +108,16 @@ void CVulkanMesh::createIndexBuffer(const std::vector<uint16_t> indices) {
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
-	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+	CVulkanUtils::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
 	void* data;
 	vkMapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
 	memcpy(data, m_Indices.data(), (size_t)bufferSize);
 	vkUnmapMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory);
 
-	CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+	CVulkanUtils::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
-	CVulkanQueueFamily::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
+	CVulkanUtils::copyBuffer(m_Instance->GetLogicalDevice(), m_Instance->GetCommandPool(), m_Instance->GetGraphicsQueue(), stagingBuffer, indexBuffer, bufferSize);
 
 	vkDestroyBuffer(m_Instance->GetLogicalDevice(), stagingBuffer, nullptr);
 	vkFreeMemory(m_Instance->GetLogicalDevice(), stagingBufferMemory, nullptr);
@@ -132,7 +132,7 @@ void CVulkanMesh::CreateUniformBuffer(CVulkanUniform* uniform, size_t uniformBuf
 	uniformBuffersMemory.resize(m_Instance->GetSwapchainImages().size());
 
 	for (size_t i = 0; i < m_Instance->GetSwapchainImages().size(); i++) {
-		CVulkanQueueFamily::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+		CVulkanUtils::createBuffer(m_Instance->GetPhysicalDevice(), m_Instance->GetLogicalDevice(), uniformBufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
 	}
 	uniform->SetUniformBuffers(uniformBuffers, uniformBuffersMemory);
 }

@@ -38,7 +38,7 @@ void CVulkanDrawing::DestroyFrameBuffers()
 
 void CVulkanDrawing::CreateCommandPool()
 {
-	SQueueFamilyIndices queueFamilyIndices = CVulkanQueueFamily::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
+	SQueueFamilyIndices queueFamilyIndices = CVulkanUtils::findQueueFamilies(m_Instance->GetPhysicalDevice(), m_Instance->GetSurface());
 
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
