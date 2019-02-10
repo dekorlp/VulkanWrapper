@@ -3,31 +3,10 @@
 void CVulkanPipeline::InitVulkanPipeline(CVulkanInstance* instance)
 {
 	m_Instance = instance;
-	//m_Presentation = instance.get
 }
 
-void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex)
+void CVulkanPipeline::CreateGraphicsPipeline(CVulkanVertex vertex)
 {
-	auto vertShaderCode = vertexShader;
-	auto fragShaderCode = fragmentShader;
-	
-	VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode);
-	VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode);
-
-	VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
-	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	vertShaderStageInfo.module = vertShaderModule;
-	vertShaderStageInfo.pName = "main";
-
-	VkPipelineShaderStageCreateInfo fragShaderStageInfo = {};
-	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	fragShaderStageInfo.module = fragShaderModule;
-	fragShaderStageInfo.pName = "main";
-
-	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
-
 	auto bindingDesription = vertex.getBindingDescription();
 	auto attributeDescription = vertex.getAttributeDescription();
 
@@ -131,8 +110,8 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 
 	VkGraphicsPipelineCreateInfo pipelineInfo = {};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipelineInfo.stageCount = 2;
-	pipelineInfo.pStages = shaderStages;
+	pipelineInfo.stageCount = m_ShaderStages.size();
+	pipelineInfo.pStages = m_ShaderStages.data();
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
 	pipelineInfo.pViewportState = &viewportState;
@@ -149,24 +128,12 @@ void CVulkanPipeline::CreateGraphicsPipeline(std::vector<char> vertexShader, std
 		throw std::runtime_error("failed to create graphics pipeline!");
 	}
 
-	vkDestroyShaderModule(m_Instance->GetLogicalDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(m_Instance->GetLogicalDevice(), vertShaderModule, nullptr);
-
-}
-
-VkShaderModule CVulkanPipeline::CreateShaderModule(const std::vector<char>& code)
-{
-	VkShaderModuleCreateInfo createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(m_Instance->GetLogicalDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create shader module!");
+	//shaderModule is not longer needed
+	for (unsigned int i = 0; i < m_VulkanShader.size(); i++)
+	{
+		vkDestroyShaderModule(m_Instance->GetLogicalDevice(), m_VulkanShader[i].GetShaderModule(), nullptr);
 	}
 
-	return shaderModule;
 }
 
 void CVulkanPipeline::CreateDescriptorSetLayouts()
@@ -219,6 +186,26 @@ void CVulkanPipeline::AddUniform(CVulkanUniform uniform)
 	{
 		m_UniformSets.at(uniform.GetUniformSet()).push_back(uniform);
 	}
+}
+
+void CVulkanPipeline::AddShader(std::vector<char> shaderProgram, VkShaderStageFlagBits shaderStage)
+{
+	
+	VkShaderModule shaderModule = CVulkanQueueFamily::CreateShaderModule(m_Instance, shaderProgram);
+
+	VkPipelineShaderStageCreateInfo shaderStageInfo = {};
+	shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	shaderStageInfo.stage = shaderStage;
+	shaderStageInfo.module = shaderModule;
+	shaderStageInfo.pName = "main";
+
+	m_ShaderStages.push_back(shaderStageInfo);
+
+	CVulkanShader shader;
+	shader.SetShaderModule(shaderModule);
+	shader.SetShaderStageFlagBits(shaderStage);
+
+	m_VulkanShader.push_back(shader);
 }
 
 void CVulkanPipeline::DestroyPipeline()

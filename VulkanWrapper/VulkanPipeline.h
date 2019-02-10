@@ -6,13 +6,13 @@
 
 #include "VulkanLogicalDevice.h"
 #include "VulkanUniform.h"
+#include "CVulkanShader.h"
 
 class CVulkanPipeline
 {
 public:
 	void InitVulkanPipeline(CVulkanInstance* instance);
-	void CreateGraphicsPipeline(std::vector<char> vertexShader, std::vector<char> fragmentShader, CVulkanVertex vertex);
-	VkShaderModule CreateShaderModule(const std::vector<char>& code);
+	void CreateGraphicsPipeline(CVulkanVertex vertex);
 	void CreateDescriptorSetLayouts();
 	void DestroyPipeline();
 	void DestroyDescriptorSetLayout();
@@ -21,6 +21,7 @@ public:
 	std::vector<VkDescriptorSetLayout> GetDescriptorSetLayouts();
 	std::vector<std::vector<CVulkanUniform>> GetDescriptorUniforms();
 	void AddUniform(CVulkanUniform uniform);
+	void AddShader(std::vector<char> shaderProgram, VkShaderStageFlagBits shaderStage);
 
 private:
 	VkPipelineLayout pipelineLayout;
@@ -29,4 +30,7 @@ private:
 	CVulkanInstance* m_Instance;
 	std::vector<std::vector<CVulkanUniform>> m_UniformSets;
 	std::vector<VkDescriptorSetLayout> m_DescriptorSetLayouts;
+
+	std::vector<CVulkanShader> m_VulkanShader;
+	std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages;
 };
