@@ -1,8 +1,8 @@
 #pragma once
-#include "VulkanVertex.h"
+#include "VulkanVertexDescription.h"
 #include <glm/glm.hpp>
 
-class CCustomVertex : public CVulkanVertex
+class CCustomVertex : public CVulkanVertexDescription
 {
 	public:
 		glm::vec2 pos;

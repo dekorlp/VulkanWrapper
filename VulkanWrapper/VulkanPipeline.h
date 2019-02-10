@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <vulkan\vulkan.h>
-#include "VulkanVertex.h"
+#include "VulkanVertexDescription.h"
 
 #include "VulkanLogicalDevice.h"
 #include "VulkanUniform.h"
@@ -12,7 +12,7 @@ class CVulkanPipeline
 {
 public:
 	void InitVulkanPipeline(CVulkanInstance* instance);
-	void CreateGraphicsPipeline(CVulkanVertex vertex);
+	void CreateGraphicsPipeline(CVulkanVertexDescription vertexDescription);
 	void CreateDescriptorSetLayouts();
 	void DestroyPipeline();
 	void DestroyDescriptorSetLayout();

@@ -1,16 +1,16 @@
-#include "VulkanVertex.h"
+#include "VulkanVertexDescription.h"
 
-void CVulkanVertex::AddVertexInputBindingDescription(VkVertexInputBindingDescription bindingDescription)
+void CVulkanVertexDescription::AddVertexInputBindingDescription(VkVertexInputBindingDescription bindingDescription)
 {
 	this->m_VertexInputBindingDescription.push_back(bindingDescription);
 }
 
-void CVulkanVertex::AddVertexInputAttributeDescription(VkVertexInputAttributeDescription attributeDescription)
+void CVulkanVertexDescription::AddVertexInputAttributeDescription(VkVertexInputAttributeDescription attributeDescription)
 {
 	this->m_VertexInputAttributeDescription.push_back(attributeDescription);
 }
 
-void CVulkanVertex::AddVertexInputBindingDescription(size_t SizeOfVertexType, unsigned int binding)
+void CVulkanVertexDescription::AddVertexInputBindingDescription(size_t SizeOfVertexType, unsigned int binding)
 {
 	VkVertexInputBindingDescription bindingDescription = {};
 	bindingDescription.binding = binding;
@@ -19,7 +19,7 @@ void CVulkanVertex::AddVertexInputBindingDescription(size_t SizeOfVertexType, un
 	m_VertexInputBindingDescription.push_back(bindingDescription);
 }
 
-void CVulkanVertex::AddVertexInputAttributeDescription(size_t offset, unsigned int binding, unsigned int location, VkFormat format)
+void CVulkanVertexDescription::AddVertexInputAttributeDescription(size_t offset, unsigned int binding, unsigned int location, VkFormat format)
 {
 	
 	VkVertexInputAttributeDescription positionAttributeDescription;
@@ -30,12 +30,12 @@ void CVulkanVertex::AddVertexInputAttributeDescription(size_t offset, unsigned i
 	m_VertexInputAttributeDescription.push_back(positionAttributeDescription);
 }
 
-std::vector<VkVertexInputBindingDescription> CVulkanVertex::getBindingDescription()
+std::vector<VkVertexInputBindingDescription> CVulkanVertexDescription::getBindingDescription()
 {
 	return this->m_VertexInputBindingDescription;
 }
 
-std::vector<VkVertexInputAttributeDescription> CVulkanVertex::getAttributeDescription()
+std::vector<VkVertexInputAttributeDescription> CVulkanVertexDescription::getAttributeDescription()
 {
 	return this->m_VertexInputAttributeDescription;
 }

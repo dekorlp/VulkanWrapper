@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CVulkanShader.cpp" />
-    <ClCompile Include="CVulkanVertex.cpp" />
+    <ClCompile Include="VulkanVertexDescription.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanDrawing.cpp" />
@@ -176,7 +176,7 @@
     <ClInclude Include="vulkanqueuefamilie.h" />
     <ClInclude Include="VulkanUniform.h" />
     <ClInclude Include="VulkanValidationLayers.h" />
-    <ClInclude Include="VulkanVertex.h" />
+    <ClInclude Include="VulkanVertexDescription.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Descriptor\frag.spv" />

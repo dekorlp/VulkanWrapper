@@ -5,10 +5,10 @@ void CVulkanPipeline::InitVulkanPipeline(CVulkanInstance* instance)
 	m_Instance = instance;
 }
 
-void CVulkanPipeline::CreateGraphicsPipeline(CVulkanVertex vertex)
+void CVulkanPipeline::CreateGraphicsPipeline(CVulkanVertexDescription vertexDescription)
 {
-	auto bindingDesription = vertex.getBindingDescription();
-	auto attributeDescription = vertex.getAttributeDescription();
+	auto bindingDesription = vertexDescription.getBindingDescription();
+	auto attributeDescription = vertexDescription.getAttributeDescription();
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

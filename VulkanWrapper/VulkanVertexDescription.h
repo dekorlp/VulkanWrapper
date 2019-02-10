@@ -2,7 +2,7 @@
 #include <vector>
 #include <vulkan\vulkan.h>
 
-class CVulkanVertex
+class CVulkanVertexDescription
 {
 	public:
 
