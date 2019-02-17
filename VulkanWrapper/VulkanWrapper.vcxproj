@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Repository\0ad\libraries\win32\sdl2\include;D:\Repository\0ad\libraries\win32\vulkan\Include;D:\Repository\0ad\libraries\win32\sdl2\include\SDL;D:\Repository\3rdParty\glm;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Repository\0ad\libraries\win32\sdl2\include;D:\Repository\0ad\libraries\win32\vulkan\Include;D:\Repository\0ad\libraries\win32\sdl2\include\SDL;D:\Repository\3rdParty\glm;D:\Repository\3rdParty\stb_image;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Repository\0ad\libraries\win32\sdl2\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

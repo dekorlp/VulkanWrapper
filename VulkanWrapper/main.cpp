@@ -17,7 +17,8 @@
 #include "VulkanUniform.h"
 #include <vector>
 
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 // Debug callback Handler
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -58,6 +59,27 @@ public:
 		return buffer;
 	}
 
+	static unsigned char* loadImage(const char* filename, int* imgWith, int* imgHeight, int* imgChannels)
+	{
+		int texWidth, texHeight, texChannels;
+		stbi_uc* pixels = stbi_load("textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+		VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+		if (!pixels) {
+			throw std::runtime_error("failed to load texture image!");
+		}
+		*imgWith = texWidth;
+		*imgHeight = texHeight;
+		*imgChannels = texChannels;
+
+		return pixels;
+	}
+
+	static void freeImage(unsigned char* pixels)
+	{
+		stbi_image_free(pixels);
+	}
+
 private:
 
 	void initWindow() {
@@ -90,6 +112,14 @@ private:
 		for (const auto& extension : vulkanInstance.getExtensions()) {
 			std::cout << "\t" << extension.extensionName << std::endl;
 		}
+
+		// Texture Test
+		int texWidth, texHeight, texChannels;
+		unsigned char* imagePtr = loadImage("textures/texture.jpg", &texWidth, &texHeight, &texChannels);
+		freeImage(imagePtr);
+		int test = 0;
+
+
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		vulkanDebug.SetupVulkanDebug(vulkanInstance);
