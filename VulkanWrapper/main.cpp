@@ -13,12 +13,14 @@
 #include "VulkanDebug.h"
 #include "VulkanMesh.h"
 #include "CustomVertex.h"
+#include "VulkanTexture.h"
 #include "SUniformBufferObject.h"
 #include "VulkanUniform.h"
 #include <vector>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+//#define STB_IMAGE_IMPLEMENTATION
+//#include <stb_image.h>
+#include "Image.h"
 
 // Debug callback Handler
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
@@ -59,11 +61,10 @@ public:
 		return buffer;
 	}
 
-	static unsigned char* loadImage(const char* filename, int* imgWith, int* imgHeight, int* imgChannels)
+	/*static unsigned char* loadImage(const char* filename, int* imgWith, int* imgHeight, int* imgChannels, int* components)
 	{
 		int texWidth, texHeight, texChannels;
 		stbi_uc* pixels = stbi_load("textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-		VkDeviceSize imageSize = texWidth * texHeight * 4;
 
 		if (!pixels) {
 			throw std::runtime_error("failed to load texture image!");
@@ -71,6 +72,7 @@ public:
 		*imgWith = texWidth;
 		*imgHeight = texHeight;
 		*imgChannels = texChannels;
+		*components = STBI_rgb_alpha;
 
 		return pixels;
 	}
@@ -78,7 +80,7 @@ public:
 	static void freeImage(unsigned char* pixels)
 	{
 		stbi_image_free(pixels);
-	}
+	}*/
 
 private:
 
@@ -114,10 +116,10 @@ private:
 		}
 
 		// Texture Test
-		int texWidth, texHeight, texChannels;
-		unsigned char* imagePtr = loadImage("textures/texture.jpg", &texWidth, &texHeight, &texChannels);
-		freeImage(imagePtr);
-		int test = 0;
+		//int texWidth, texHeight, texChannels, components;
+		//unsigned char* imagePtr = loadImage("textures/texture.jpg", &texWidth, &texHeight, &texChannels, &components);
+		//freeImage(imagePtr);
+		//int test = 0;
 
 
 
@@ -138,6 +140,13 @@ private:
 		vulkanPipeline.InitVulkanPipeline(&vulkanInstance);
 		vulkanPipeline.AddShader(readFile("shader/Descriptor/vert.spv"), VK_SHADER_STAGE_VERTEX_BIT);
 		vulkanPipeline.AddShader(readFile("shader/Descriptor/frag.spv"), VK_SHADER_STAGE_FRAGMENT_BIT);
+
+		// Texture Creation
+		CVulkanTexture vulkanTexture;
+		Image image;
+		image.Load("textures/texture.jpg");
+		vulkanTexture.CreateTextureImage(vulkanInstance, image.GetPixels(), image.GetWith(), image.GetHeight(), 4);
+		image.UnLoad();
 
 		uniform1.CreateUniform(0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
 		vulkanPipeline.AddUniform(uniform1);
