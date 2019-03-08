@@ -142,10 +142,10 @@ private:
 		vulkanPipeline.AddShader(readFile("shader/Descriptor/frag.spv"), VK_SHADER_STAGE_FRAGMENT_BIT);
 
 		// Texture Creation
-		CVulkanTexture vulkanTexture;
+		
 		Image image;
 		image.Load("textures/texture.jpg");
-		vulkanTexture.CreateTextureImage(vulkanInstance, image.GetPixels(), image.GetWith(), image.GetHeight(), 4);
+		vulkanTexture.CreateTextureImage(&vulkanInstance, image.GetPixels(), image.GetWith(), image.GetHeight(), 4);
 		image.UnLoad();
 
 		uniform1.CreateUniform(0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
@@ -282,6 +282,7 @@ private:
 		plane.DestroyUniformBuffers(&uniform1);
 		plane.DestroyIndexBuffer();
 		plane.DestroyVertexBuffer();
+		vulkanTexture.DestroyTexture();
 		vulkanDrawing.DestroyFrameBuffers();
 		vulkanPipeline.DestroyPipeline();
 		vulkanPipeline.DestroyDescriptorSetLayout();
@@ -308,6 +309,7 @@ private:
 	CVulkanDrawing vulkanDrawing;
 	CVulkanMesh plane;
 	CVulkanUniform uniform1;
+	CVulkanTexture vulkanTexture;
 
 	VkInstance instance;
 	int  width;
