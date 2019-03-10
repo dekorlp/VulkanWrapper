@@ -147,10 +147,10 @@ void CVulkanPipeline::CreateDescriptorSetLayouts()
 		for (unsigned int j = 0; j < m_UniformSets.at(i).size(); j++)
 		{
 			VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-			uboLayoutBinding.binding = m_UniformSets.at(i).at(j).GetUniformBinding();
-			uboLayoutBinding.descriptorType = m_UniformSets.at(i).at(j).GetDescriptorType();
+			uboLayoutBinding.binding = m_UniformSets.at(i).at(j)->GetUniformBinding();
+			uboLayoutBinding.descriptorType = m_UniformSets.at(i).at(j)->GetDescriptorType();
 			uboLayoutBinding.descriptorCount = 1;
-			uboLayoutBinding.stageFlags = m_UniformSets.at(i).at(j).GetShaderStageFlag();
+			uboLayoutBinding.stageFlags = m_UniformSets.at(i).at(j)->GetShaderStageFlag();
 			uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
 			layoutBindings.push_back(uboLayoutBinding);
 		}
@@ -167,24 +167,24 @@ void CVulkanPipeline::CreateDescriptorSetLayouts()
 	}
 }
 
-std::vector<std::vector<CVulkanUniform>> CVulkanPipeline::GetDescriptorUniforms()
+std::vector<std::vector<CVulkanUniform*>> CVulkanPipeline::GetDescriptorUniforms()
 {
 	return m_UniformSets;
 }
 
-void CVulkanPipeline::AddUniform(CVulkanUniform uniform)
+void CVulkanPipeline::AddUniform(CVulkanUniform* uniform)
 {
-	if (uniform.GetUniformSet() > m_UniformSets.size())
+	if (uniform->GetUniformSet() > m_UniformSets.size())
 	{
 		throw std::runtime_error("failed to add Uniform! Uniform sets must be crated in an ascending order starting with 0!");
 	}
-	else if (uniform.GetUniformSet() == m_UniformSets.size())
+	else if (uniform->GetUniformSet() == m_UniformSets.size())
 	{
-		m_UniformSets.push_back(std::vector<CVulkanUniform>(1, uniform));
+		m_UniformSets.push_back(std::vector<CVulkanUniform*>(1, uniform));
 	}
 	else // uniform.GetUniformSet() < m_Uniform.size()
 	{
-		m_UniformSets.at(uniform.GetUniformSet()).push_back(uniform);
+		m_UniformSets.at(uniform->GetUniformSet()).push_back(uniform);
 	}
 }
 

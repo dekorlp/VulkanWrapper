@@ -151,7 +151,7 @@ private:
 		image.UnLoad();
 
 		uniform1.CreateUniform(0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
-		vulkanPipeline.AddUniform(uniform1);
+		vulkanPipeline.AddUniform(&uniform1);
 		vulkanPipeline.CreateDescriptorSetLayouts();
 		vulkanPipeline.CreateGraphicsPipeline(CCustomVertex());
 

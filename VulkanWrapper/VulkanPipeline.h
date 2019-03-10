@@ -19,8 +19,8 @@ public:
 	VkPipeline GetGraphicsPipeline();
 	VkPipelineLayout GetPipelineLayout();
 	std::vector<VkDescriptorSetLayout> GetDescriptorSetLayouts();
-	std::vector<std::vector<CVulkanUniform>> GetDescriptorUniforms();
-	void AddUniform(CVulkanUniform uniform);
+	std::vector<std::vector<CVulkanUniform*>> GetDescriptorUniforms();
+	void AddUniform(CVulkanUniform* uniform);
 	void AddShader(std::vector<char> shaderProgram, VkShaderStageFlagBits shaderStage);
 	void AddShader(const char* shaderProgram, unsigned int shaderProgramSize, VkShaderStageFlagBits shaderStage);
 
@@ -29,7 +29,7 @@ private:
 	VkPipeline graphicsPipeline;
 
 	CVulkanInstance* m_Instance;
-	std::vector<std::vector<CVulkanUniform>> m_UniformSets;
+	std::vector<std::vector<CVulkanUniform*>> m_UniformSets;
 	std::vector<VkDescriptorSetLayout> m_DescriptorSetLayouts;
 
 	std::vector<CVulkanShader> m_VulkanShader;

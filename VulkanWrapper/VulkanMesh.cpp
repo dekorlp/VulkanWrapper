@@ -146,7 +146,7 @@ void CVulkanMesh::CreateDescriptorPool()
 		for (unsigned int j = 0; j < m_Pipeline->GetDescriptorUniforms()[i].size(); j++)
 		{
 			VkDescriptorPoolSize poolSize = {};
-			poolSize.type = m_Pipeline->GetDescriptorUniforms()[i][j].GetDescriptorType();
+			poolSize.type = m_Pipeline->GetDescriptorUniforms()[i][j]->GetDescriptorType();
 			poolSize.descriptorCount = static_cast<uint32_t>(m_Instance->GetSwapchainImages().size());
 			descriptorPools.push_back(poolSize);
 		}
