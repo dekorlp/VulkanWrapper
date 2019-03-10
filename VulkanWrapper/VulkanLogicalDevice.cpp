@@ -22,6 +22,8 @@ void CVulkanLogicalDevice::CreateLogicalDevice(CVulkanInstance* instance)
 
 
 	VkPhysicalDeviceFeatures deviceFeatures = {};
+	// TODO: implement anisotropy filter switch via CrealeLogicalDeviceParameter
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 	VkDeviceCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

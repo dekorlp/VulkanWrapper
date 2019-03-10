@@ -207,6 +207,16 @@ VkCommandPool CVulkanInstance::GetCommandPool()
 	return m_CommandPool;
 }
 
+void CVulkanInstance::SetSwapchainImageFormat(VkFormat swapChainImageFormat)
+{
+	m_SwapChainImageFormat = swapChainImageFormat;
+}
+
+VkFormat CVulkanInstance::GetSwapChainImageFormat()
+{
+	return m_SwapChainImageFormat;
+}
+
 CVulkanInstance& CVulkanInstance::operator=(CVulkanInstance const* rhs)
 {
 	return *this;

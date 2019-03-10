@@ -146,6 +146,8 @@ private:
 		Image image;
 		image.Load("textures/texture.jpg");
 		vulkanTexture.CreateTextureImage(&vulkanInstance, image.GetPixels(), image.GetWith(), image.GetHeight(), 4);
+		vulkanTexture.CreateTextureImageView(&vulkanInstance);
+		vulkanTexture.CreateTextureSampler();
 		image.UnLoad();
 
 		uniform1.CreateUniform(0, 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT);
@@ -282,7 +284,9 @@ private:
 		plane.DestroyUniformBuffers(&uniform1);
 		plane.DestroyIndexBuffer();
 		plane.DestroyVertexBuffer();
-		vulkanTexture.DestroyTexture();
+		vulkanTexture.DestroyTextureSampler();
+		vulkanTexture.DestroyTextureImageView();
+		vulkanTexture.DestroyTextureImage();
 		vulkanDrawing.DestroyFrameBuffers();
 		vulkanPipeline.DestroyPipeline();
 		vulkanPipeline.DestroyDescriptorSetLayout();

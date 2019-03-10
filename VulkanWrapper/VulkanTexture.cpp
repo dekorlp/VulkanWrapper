@@ -27,6 +27,58 @@ void CVulkanTexture::CreateTextureImage(CVulkanInstance* instance, unsigned char
 	
 }
 
+void CVulkanTexture::CreateTextureImageView(CVulkanInstance* instance)
+{
+	textureImageView = createImageView(instance->GetLogicalDevice(), textureImage, VK_FORMAT_R8G8B8A8_UNORM);
+}
+
+void CVulkanTexture::CreateTextureSampler()
+{
+	VkSamplerCreateInfo samplerInfo = {};
+	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+	samplerInfo.magFilter = VK_FILTER_LINEAR;
+	samplerInfo.minFilter = VK_FILTER_LINEAR;
+	samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+
+	samplerInfo.anisotropyEnable = VK_TRUE;
+	samplerInfo.maxAnisotropy = 16;
+	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+	samplerInfo.unnormalizedCoordinates = VK_FALSE;
+	samplerInfo.compareEnable = VK_FALSE;
+	samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	samplerInfo.mipLodBias = 0.0f;
+	samplerInfo.minLod = 0.0f;
+	samplerInfo.maxLod = 0.0f;
+
+	if (vkCreateSampler(m_Instance->GetLogicalDevice(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create texture sampler!");
+	}
+}
+
+VkImageView CVulkanTexture::createImageView(VkDevice device, VkImage image, VkFormat format)
+{
+	VkImageViewCreateInfo viewInfo = {};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.image = image;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.format = format;
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = 1;
+
+	VkImageView imageView;
+	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create texture image view!");
+	}
+
+	return imageView;
+}
+
 void CVulkanTexture::CreateImage(CVulkanInstance* instance, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
 {
 	VkImageCreateInfo imageInfo = {};
@@ -148,8 +200,28 @@ void CVulkanTexture::copyBufferToImage(CVulkanInstance* instance, VkBuffer buffe
 	CVulkanUtils::endSingleTimeCommands(instance->GetLogicalDevice(), instance->GetCommandPool(), commandBuffer, instance->GetGraphicsQueue());
 }
 
-void CVulkanTexture::DestroyTexture()
+void CVulkanTexture::createImageViews(CVulkanInstance* instance)
+{
+	instance->GetSwapchainImageViews().resize(instance->GetSwapchainImages().size());
+	
+	
+	for (uint32_t i = 0; i < instance->GetSwapchainImages().size(); i++) {
+		instance->GetSwapchainImageViews()[i] = createImageView(instance->GetLogicalDevice(), instance->GetSwapchainImages()[i], instance->GetSwapChainImageFormat());
+	}
+}
+
+void CVulkanTexture::DestroyTextureImage()
 {
 	vkDestroyImage(m_Instance->GetLogicalDevice(), textureImage, nullptr);
 	vkFreeMemory(m_Instance->GetLogicalDevice(), textureImageMemory, nullptr);
+}
+
+void CVulkanTexture::DestroyTextureImageView()
+{
+	vkDestroyImageView(m_Instance->GetLogicalDevice(), textureImageView, nullptr);
+}
+
+void CVulkanTexture::DestroyTextureSampler()
+{
+	vkDestroySampler(m_Instance->GetLogicalDevice(), textureSampler, nullptr);
 }

@@ -129,8 +129,8 @@ void CVulkanPresentation::CreateSwapChain(unsigned int width, unsigned int heigh
 	vkGetSwapchainImagesKHR(m_Instance->GetLogicalDevice(), m_Instance->GetSwapchain(), &imageCount, swapChainImages.data());
 	m_Instance->SetSwapchainImages(swapChainImages);
 
-
-	swapChainImageFormat = surfaceFormat.format;
+	m_Instance->SetSwapchainImageFormat(surfaceFormat.format);
+	
 	swapChainExtent = extent;
 }
 
@@ -149,7 +149,7 @@ void CVulkanPresentation::CreateImageViews()
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		createInfo.image = m_Instance->GetSwapchainImages()[i];
 		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = swapChainImageFormat;
+		createInfo.format = m_Instance->GetSwapChainImageFormat();
 
 		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -248,7 +248,7 @@ VkExtent2D CVulkanPresentation::GetSwapChainExtend()
 
 VkFormat CVulkanPresentation::GetSwapChainImageFormat()
 {
-	return swapChainImageFormat;
+	return m_Instance->GetSwapChainImageFormat();
 }
 
 std::vector<VkImageView> CVulkanPresentation::GetSwapChainImageViews()

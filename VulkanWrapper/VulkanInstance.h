@@ -66,6 +66,9 @@ public:
 	void SetCommandPool(VkCommandPool commandPool);
 	VkCommandPool GetCommandPool();
 
+	void SetSwapchainImageFormat(VkFormat swapChainImageFormat);
+	VkFormat GetSwapChainImageFormat();
+
 	CVulkanInstance& operator=(CVulkanInstance const* rhs);
 
 
@@ -90,6 +93,7 @@ private:
 	std::vector<VkImageView> swapChainImageViews;
 	VkSwapchainKHR m_SwapChain;
 	std::vector<VkImage> swapChainImages;
+	VkFormat m_SwapChainImageFormat;
 
 	uint32_t m_SelectedImageToDraw;
 };

@@ -6,14 +6,18 @@ bool CVulkanUtils::IsDeviceSuitable(CVulkanInstance vulkanInstance, VkPhysicalDe
 
 	bool extensionsSupported = checkDeviceExtensionSupport(vulkanInstance, device);
 
+	// get supported Device Features like anisotropy etc.
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
 	bool swapChainAdequate = false;
 	if (extensionsSupported) {
 		SSwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device, surface);
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 
-	return extensionsSupported && swapChainAdequate;
-	return indices.isComplete() && extensionsSupported && swapChainAdequate;
+	//return extensionsSupported && swapChainAdequate;
+	return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;;
 }
 
 bool CVulkanUtils::checkDeviceExtensionSupport(CVulkanInstance vulkanInstance, VkPhysicalDevice device) {
