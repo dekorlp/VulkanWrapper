@@ -16,7 +16,6 @@ private:
 	void CreateImage(CVulkanInstance* instance, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(CVulkanInstance* instance, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(CVulkanInstance* instance, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-	void createImageViews(CVulkanInstance* instance);
 
 	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format);
 

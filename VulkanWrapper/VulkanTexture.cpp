@@ -200,15 +200,6 @@ void CVulkanTexture::copyBufferToImage(CVulkanInstance* instance, VkBuffer buffe
 	CVulkanUtils::endSingleTimeCommands(instance->GetLogicalDevice(), instance->GetCommandPool(), commandBuffer, instance->GetGraphicsQueue());
 }
 
-void CVulkanTexture::createImageViews(CVulkanInstance* instance)
-{
-	instance->GetSwapchainImageViews().resize(instance->GetSwapchainImages().size());
-	
-	
-	for (uint32_t i = 0; i < instance->GetSwapchainImages().size(); i++) {
-		instance->GetSwapchainImageViews()[i] = createImageView(instance->GetLogicalDevice(), instance->GetSwapchainImages()[i], instance->GetSwapChainImageFormat());
-	}
-}
 
 void CVulkanTexture::DestroyTextureImage()
 {
