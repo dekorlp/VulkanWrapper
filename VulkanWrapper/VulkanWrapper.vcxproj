@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Repository\0ad\libraries\win32\sdl2\include;D:\Repository\0ad\libraries\win32\vulkan\Include;D:\Repository\0ad\libraries\win32\sdl2\include\SDL;D:\Repository\3rdParty\glm;D:\Repository\3rdParty\stb_image;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Repository\0ad\libraries\win32\sdl2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\VulkanThirdParty\GLM;..\VulkanThirdParty\SDL\include;..\VulkanThirdParty\Vulkan;..\VulkanThirdParty\Stb;$(IncludePath)</IncludePath>
+    <LibraryPath>..\VulkanThirdParty\SDL\lib;..\VulkanThirdParty\Vulkan\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Repository\0ad\libraries\win32\sdl2\lib;D:\Repository\0ad\libraries\win32\vulkan\Lib32;D:\Repository\0ad\binaries\system;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
